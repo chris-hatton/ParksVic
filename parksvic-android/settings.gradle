@@ -1,0 +1,2 @@
+include ':app'
+includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-android'

@@ -1,0 +1,3 @@
+rootProject.name = 'parksvic-desktop'
+
+includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-tornadofx'

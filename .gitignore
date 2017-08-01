@@ -1,0 +1,15 @@
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+crosswind-android/build
+crosswind-tornadofx/build
+parksvic-android/build
+parksvic-desktop/build
+google_maps_api.xml
+parksvic/build

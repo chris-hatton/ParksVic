@@ -1,0 +1,31 @@
+apply plugin: 'java'
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile project(':geojson')
+    compile project(':crosswind')
+
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // OkHttp
+    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // Retrofit
+    compile "com.google.code.gson:gson:2.7"
+    compile "com.squareup.retrofit2:retrofit:$retrofit_version"
+    compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
+    // ReactiveX
+    compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
+    compile "io.reactivex.rxjava2:rxjava:$rx_version"
+}
