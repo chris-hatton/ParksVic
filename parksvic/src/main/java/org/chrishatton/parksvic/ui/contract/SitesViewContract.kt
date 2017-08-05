@@ -11,5 +11,5 @@ interface SitesViewContract : ViewContract {
 
     val viewportBoundingBoxes : Observable<Array<BoundingBox>>
 
-    val viewportSitesConsumer : Consumer<Array<Site>>
+    fun onViewportSitesReceived( sites: List<Site> )
 }

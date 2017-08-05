@@ -10,14 +10,14 @@ abstract class PresentedActivity<T,P> : FragmentActivity()
 
     protected lateinit var presenter : P
 
-    abstract fun createPresenter() : P
+    protected abstract fun createPresenter() : P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         presenter = createPresenter()
 
-        presenter.onCreate( view = this )
+        presenter.onCreate()
     }
 
     override fun onResume() {

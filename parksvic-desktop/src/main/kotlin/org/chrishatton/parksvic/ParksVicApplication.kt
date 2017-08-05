@@ -1,6 +1,7 @@
 package org.chrishatton.parksvic
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
+import javafx.application.Platform
 import org.chrishatton.crosswind.Environment
 import org.chrishatton.crosswind.environment
 import org.chrishatton.parksvic.view.SitesView
@@ -12,9 +13,9 @@ class ParksVicApplication : App() {
 
     init {
         environment = Environment(
-                uiScheduler = JavaFxScheduler.platform(),
-                logger      = { message -> println(message) }
+            uiScheduler  = JavaFxScheduler.platform(),
+            logger       = { message -> println(message) },
+            isOnUiThread = { Platform.isFxApplicationThread() }
         )
     }
-
 }

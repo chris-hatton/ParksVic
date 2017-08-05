@@ -1,4 +1,4 @@
-apply plugin: 'java'
+apply plugin: 'kotlin'
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
@@ -28,4 +28,8 @@ dependencies {
     // ReactiveX
     compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
     compile "io.reactivex.rxjava2:rxjava:$rx_version"
+
+    // Joda time
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+
 }

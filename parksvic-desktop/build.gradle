@@ -21,7 +21,6 @@ apply plugin: 'javafx-gradle-plugin'
 
 sourceCompatibility = 1.8
 
-
 repositories {
     mavenCentral()
 }
@@ -44,6 +43,7 @@ dependencies {
     compile project('parksvic')
     compile project('crosswind')
     compile project('crosswind-tornadofx')
+    compile project(':gmapsfx')
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
@@ -56,7 +56,8 @@ dependencies {
     compile 'com.jfoenix:jfoenix:1.2.0'
 
     // GMapsFX
-    compile group: 'com.lynden', name: 'GMapsFX', version: '2.12.0'
+    // Compiling from source, above, because fixes needed
+    //compile group: 'com.lynden', name: 'GMapsFX', version: '2.12.0'
 
     // RxKotlinFX (https://github.com/thomasnield/RxKotlinFX)
     compile 'com.github.thomasnield:rxkotlinfx:2.1.0'
