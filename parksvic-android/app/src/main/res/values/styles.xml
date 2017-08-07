@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SiteDetailTitleLabel" parent="TextAppearance.AppCompat.Title">
+        <item name="android:layout_columnWeight">0.0</item>
+        <item name="android:layout_marginRight">@dimen/gap_medium</item>
+        <item name="android:layout_gravity">right</item>
+    </style>
+
+    <style name="SiteDetailValueLabel" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:layout_columnWeight">1.0</item>
+        <item name="android:layout_gravity">left</item>
+    </style>
+
 </resources>

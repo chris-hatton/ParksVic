@@ -1,12 +1,11 @@
 package org.chrishatton.crosswind.ui.view
 
-import android.app.Activity
 import android.os.Bundle
 import org.chrishatton.crosswind.ui.contract.ViewContract
 import org.chrishatton.crosswind.ui.presenter.Presenter
 
-abstract class PresentedActivity<T,P> : Activity()
-    where T: ViewContract, P:Presenter<T> {
+abstract class PresentedFragment<T,P> : android.app.Fragment()
+where T: ViewContract, P:Presenter<T> {
 
     lateinit var presenter : P
         protected set
@@ -17,8 +16,9 @@ abstract class PresentedActivity<T,P> : Activity()
         super.onCreate(savedInstanceState)
 
         @Suppress("UNCHECKED_CAST")
-        val view = this as T
+        val view = this as? T ?: throw Exception("${this::class} must implement ViewContract T")
         presenter = createPresenter( view )
+
         presenter.onCreate()
     }
 

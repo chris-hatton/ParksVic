@@ -11,5 +11,24 @@ interface SitesViewContract : ViewContract {
 
     val viewportBoundingBoxes : Observable<Array<BoundingBox>>
 
-    fun onViewportSitesReceived( sites: List<Site> )
+    fun setDisplayedSites(sites: List<Site> )
+
+    val userSelectedDetailLevel : Observable<DetailLevel>
+
+    fun focusSite( site: Site, zoomLevel: ZoomLevel )
+
+    var isMapInteractionEnabled : Boolean
+}
+
+enum class DetailLevel {
+    NONE,
+    MINIMAL,
+    MEDIUM,
+    FULL
+}
+
+enum class ZoomLevel {
+    NEAR,
+    MEDIUM,
+    FAR
 }

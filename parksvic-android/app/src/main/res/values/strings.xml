@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">ParksVic</string>
     <string name="title_activity_parks">Parks</string>
+
+    <!-- Site Detail -->
+
+    <string name="site_detail_label_fee">Fee</string>
+    <string name="site_detail_label_comment">Comments</string>
+    <string name="site_detail_label_heritage">Heritage</string>
+
 </resources>
