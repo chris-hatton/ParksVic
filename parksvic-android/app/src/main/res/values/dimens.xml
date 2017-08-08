@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="gap_medium">8dp</dimen>
+
+    <dimen name="info_header_height">44dp</dimen>
 </resources>

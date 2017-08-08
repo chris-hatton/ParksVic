@@ -8,9 +8,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.chrishatton.crosswind.rx.assertNotMainThread
-import org.chrishatton.crosswind.rx.observeOnUiThread
-import org.chrishatton.crosswind.rx.subscribeOnLogicThread
+import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geojson.Feature
@@ -56,7 +54,7 @@ class SitesPresenter : Presenter<SitesViewContract>() {
 
         parksWebService = retrofit.create( ParksWebservice::class.java )
 
-        selectedSite.subscribe { (site) ->
+        selectedSite.subscribeOnLogicThread().subscribe { (site) ->
             detailPresenter.site = site
         }
         .addTo(subscriptions)
@@ -81,6 +79,8 @@ class SitesPresenter : Presenter<SitesViewContract>() {
         Observables.combineLatest( selectedSite, zoomLevel ) { site, detailLevel ->
             site to detailLevel
         }
+        .subscribeOnLogicThread()
+        .observeOnUiThread()
         .subscribe { (site, detailLevel) ->
             view.focusSite(site,detailLevel)
         }
@@ -102,7 +102,7 @@ class SitesPresenter : Presenter<SitesViewContract>() {
         val featuresObservable : Observable<List<Feature>> = when( loadMode ) {
             LoadMode.EAGER -> {
                 parksWebService.getParks()
-                        .subscribeOn( Schedulers.io() )
+                        .subscribeOnNetworkThread()
                         .map { it.features }
             }
             LoadMode.LAZY -> {
@@ -111,7 +111,7 @@ class SitesPresenter : Presenter<SitesViewContract>() {
                     .flatMap { boundingBoxes ->
                         val featureCollectionObservables : List<Observable<FeatureCollection>> = boundingBoxes.map { boundingBox ->
                             parksWebService.getParks( boundingBox = boundingBox )
-                                    .subscribeOn( Schedulers.io() )
+                                    .subscribeOnNetworkThread()
                         }
 
                         Observable.zip(featureCollectionObservables) { featureCollectionObjects ->
@@ -123,6 +123,7 @@ class SitesPresenter : Presenter<SitesViewContract>() {
                     }
             }
         }
+        .observeOnLogicThread()
 
         featuresObservable
             .map { features -> features.map { siteFeatureAdapter.convert( it ) } }
@@ -141,6 +142,7 @@ class SitesPresenter : Presenter<SitesViewContract>() {
     lateinit var detailPresenter: SiteDetailPresenter
 
     fun onSelectSite( site: Site? ) {
+        assertNotMainThread()
         selectedSiteSubject.onNext(Nullable(site))
     }
 }

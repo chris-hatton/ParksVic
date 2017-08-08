@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    sothree:umanoPanelHeight="68dp"
+    sothree:umanoPanelHeight="@dimen/info_header_height"
     sothree:umanoShadowHeight="4dp"
     sothree:umanoAnchorPoint="0.35"
     sothree:umanoOverlay="false"

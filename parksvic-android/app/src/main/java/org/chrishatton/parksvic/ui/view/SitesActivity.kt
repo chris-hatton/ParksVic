@@ -1,13 +1,11 @@
 package org.chrishatton.parksvic.ui.view
 
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -22,82 +20,114 @@ import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geojson.BoundingBox
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
-import org.chrishatton.parksvic.geojson.toBoundingBoxes
-import org.chrishatton.parksvic.panelState
+import org.chrishatton.parksvic.rx.panelState
 import org.chrishatton.parksvic.ui.contract.DetailLevel
 import org.chrishatton.parksvic.ui.contract.SitesViewContract
 import org.chrishatton.parksvic.ui.presenter.SitesPresenter
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.clustering.Cluster
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
 import org.chrishatton.parksvic.ui.contract.ZoomLevel
+import com.google.maps.android.clustering.ClusterManager
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
+import org.chrishatton.crosswind.rx.doOnMainThread
+import org.chrishatton.crosswind.util.log
+import org.chrishatton.parksvic.geojson.toBoundingBoxes
+import org.chrishatton.parksvic.model.SiteItem
 
 
 class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), SitesViewContract {
 
     override fun createPresenter( view: SitesViewContract ): SitesPresenter = SitesPresenter().apply { this.view = view  }
 
-    private var mapSubject: BehaviorSubject<GoogleMap> = BehaviorSubject.create<GoogleMap>()
+    private val subscriptions = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_parks)
-        super.onCreate(savedInstanceState)
+    private lateinit var clusterManager : ClusterManager<SiteItem>
+    private lateinit var map : GoogleMap
 
+    init {
         environment = androidEnvironment
         assertMainThread()
+        RxJavaPlugins.setErrorHandler { e ->
+            log(e.stackTrace.toString())
+        }
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
 
+        setContentView(R.layout.activity_parks)
+
+        super.onCreate(savedInstanceState)
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment    = this.fragmentManager.findFragmentById(R.id.map_fragment) as MapFragment
+        val mapFragment    = this.fragmentManager.findFragmentById(R.id.map_fragment   ) as MapFragment
         val detailFragment = this.fragmentManager.findFragmentById(R.id.detail_fragment) as SiteDetailFragment
 
         presenter.detailPresenter = detailFragment.presenter
 
-        mapFragment.getMapAsync { map ->
-
-            map.setOnCameraIdleListener {
-                //doOnLogicThread {
-                    val bounds : LatLngBounds = mapSubject.value.projection.visibleRegion.latLngBounds
-                    val boundingBoxes : Array<BoundingBox> = bounds.toBoundingBoxes()
-                    boundingBoxSubject.onNext( boundingBoxes )
-                //}
-            }
-
-            doOnLogicThread {
-                mapSubject.onNext(map)
-                presenter.onMapInitialized()
-            }
-        }
+        mapFragment.getMapAsync { map -> onMapInitialised(map) }
 
         sliding_layout.setDragView      ( detailFragment.view.details_header)
         sliding_layout.setScrollableView( detailFragment.view.details_table_scroll_view)
     }
 
-    private val boundingBoxSubject = BehaviorSubject.create<Array<BoundingBox>>()
+    private fun onMapInitialised( map: GoogleMap ) {
+        assertMainThread()
 
-    override val viewportBoundingBoxes: Observable<Array<BoundingBox>> = boundingBoxSubject
+        this.map = map
 
-    private var markers : List<Marker> = emptyList()
+        clusterManager = ClusterManager<SiteItem>(this, map)
 
-    override fun setDisplayedSites(sites: List<Site> ) {
-
-        if(!mapSubject.hasValue()) { return }
-
-        val map : GoogleMap = mapSubject.value
-
-        markers.forEach { marker -> marker.remove() }
-
-        val markerMap : Map<Marker,Site> = sites.associateBy { site ->
-            val markerOptions = MarkerOptions()
-                .position( LatLng( site.latitude!!, site.longitude!! ) )
-                .title( site.name )
-
-            map.addMarker(markerOptions)
+        map.setOnCameraIdleListener {
+            clusterManager.onCameraIdle()
+            val bounds : LatLngBounds = map.projection.visibleRegion.latLngBounds
+            val boundingBoxes : Array<BoundingBox> = bounds.toBoundingBoxes()
+            boundingBoxSubject.onNext( boundingBoxes )
         }
 
-        map.setOnMarkerClickListener { marker ->
-            val site : Site = markerMap[marker] ?: return@setOnMarkerClickListener false
-            presenter.onSelectSite( site )
+        map.setOnMarkerClickListener(clusterManager)
+
+        clusterManager.setOnClusterClickListener { cluster: Cluster<SiteItem>? ->
             true
+        }
+
+        clusterManager.setOnClusterItemClickListener { siteItem: SiteItem? ->
+            doOnLogicThread { presenter.onSelectSite(siteItem?.site) }
+            true
+        }
+
+        sliding_layout.slidePanelOverlapHeight().subscribe { height ->
+            assertMainThread()
+            map.setPadding(0,0,0,height)
+        }.addTo(subscriptions)
+
+        doOnLogicThread {
+            presenter.onMapInitialized()
+        }
+    }
+
+    override fun onDestroy() {
+        subscriptions.dispose()
+        super.onDestroy()
+    }
+
+    private val boundingBoxSubject = BehaviorSubject.create<Array<BoundingBox>>()
+    override val viewportBoundingBoxes: Observable<Array<BoundingBox>> = boundingBoxSubject
+
+    override fun setDisplayedSites(sites: List<Site> ) {
+        assertMainThread()
+
+        clusterManager.clearItems()
+
+        doOnLogicThread {
+            val siteItems : List<SiteItem> = sites.map(::SiteItem)
+            doOnMainThread {
+                clusterManager.addItems(siteItems)
+            }
         }
     }
 
@@ -119,7 +149,6 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
     override fun focusSite( site: Site, zoomLevel: ZoomLevel ) {
         assertMainThread()
 
-        val map : GoogleMap = mapSubject.value
         val coordinate = LatLng( site.latitude!!, site.longitude!! )
 
         val googleMapZoomLevel : Float = when( zoomLevel ) {
@@ -135,14 +164,16 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
         }
 
-        val location = CameraUpdateFactory.newLatLngZoom( coordinate, googleMapZoomLevel )
+        val location : CameraUpdate = CameraUpdateFactory.newLatLngZoom( coordinate, googleMapZoomLevel )
 
         map.animateCamera(location)
-        map.mapType = mapType
+
+        if( map.mapType != mapType ) {
+            map.mapType = mapType
+        }
     }
 
     override var isMapInteractionEnabled: Boolean
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         set(value) {}
-
 }

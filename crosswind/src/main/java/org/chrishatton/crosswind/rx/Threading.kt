@@ -1,6 +1,7 @@
 package org.chrishatton.crosswind.rx
 
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import org.chrishatton.crosswind.environment
 
 
@@ -18,6 +19,10 @@ fun <T> Observable<T>.observeOnLogicThread() : Observable<T> {
 
 fun <T> Observable<T>.subscribeOnLogicThread() : Observable<T> {
     return this.subscribeOn( environment!!.logicScheduler )
+}
+
+fun <T> Observable<T>.subscribeOnNetworkThread() : Observable<T> {
+    return this.subscribeOn( Schedulers.io() )
 }
 
 fun assertMainThread() {
