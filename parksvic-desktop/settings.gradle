@@ -4,5 +4,5 @@ rootProject.name = 'parksvic-desktop'
 include ':gmapsfx'
 project(':gmapsfx').projectDir = new File( rootDir, '../GMapsFX/GMapsFX' )
 
-includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-tornadofx'
+includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-tornadofx', 'geoklient'
 

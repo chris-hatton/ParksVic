@@ -1,43 +1,48 @@
 package org.chrishatton.parksvic.ui.view
 
 import android.os.Bundle
-import android.util.Log
 import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.TileOverlayOptions
+import com.google.android.gms.maps.model.TileProvider
+import com.google.maps.android.clustering.Cluster
+import com.google.maps.android.clustering.ClusterManager
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_parks.*
 import kotlinx.android.synthetic.main.fragment_site_detail.view.*
+import okhttp3.HttpUrl
 import org.chrishatton.crosswind.androidEnvironment
 import org.chrishatton.crosswind.environment
 import org.chrishatton.crosswind.rx.assertMainThread
 import org.chrishatton.crosswind.rx.doOnLogicThread
+import org.chrishatton.crosswind.rx.doOnMainThread
 import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.crosswind.util.Nullable
+import org.chrishatton.crosswind.util.log
 import org.chrishatton.geojson.BoundingBox
+import org.chrishatton.geoklient.model.Layer
+import org.chrishatton.geoklient.model.request.wms.GetMap
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
-import org.chrishatton.parksvic.rx.panelState
-import org.chrishatton.parksvic.ui.contract.DetailLevel
-import org.chrishatton.parksvic.ui.contract.SitesViewContract
-import org.chrishatton.parksvic.ui.presenter.SitesPresenter
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.maps.android.clustering.Cluster
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
-import org.chrishatton.parksvic.ui.contract.ZoomLevel
-import com.google.maps.android.clustering.ClusterManager
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins
-import org.chrishatton.crosswind.rx.doOnMainThread
-import org.chrishatton.crosswind.util.log
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
 import org.chrishatton.parksvic.model.SiteItem
+import org.chrishatton.parksvic.process.wms.WmsTileProvider
+import org.chrishatton.parksvic.rx.panelState
+import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
+import org.chrishatton.parksvic.ui.contract.DetailLevel
+import org.chrishatton.parksvic.ui.contract.SitesViewContract
+import org.chrishatton.parksvic.ui.contract.ZoomLevel
+import org.chrishatton.parksvic.ui.presenter.SitesPresenter
+import java.net.URL
 
 
 class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), SitesViewContract {
@@ -79,6 +84,17 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
         assertMainThread()
 
         this.map = map
+
+        val baseUrl = URL("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")
+        val styledLayers = listOf( GetMap.StyledLayer( Layer( "FORESTS_RECWEB_HISTORIC_RELIC" ) ) )
+
+        val tileProvider : TileProvider = WmsTileProvider(
+            baseUrl      = HttpUrl.get(baseUrl)!!,
+            styledLayers = styledLayers
+        )
+
+        val tileOverlayOptions = TileOverlayOptions().tileProvider(tileProvider)
+        map.addTileOverlay( tileOverlayOptions )
 
         clusterManager = ClusterManager<SiteItem>(this, map)
 

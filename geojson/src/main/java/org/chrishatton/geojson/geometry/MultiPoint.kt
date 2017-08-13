@@ -1,8 +1,10 @@
 package org.chrishatton.geojson.geometry
 
-/**
- * Created by Chris on 30/07/2017.
- */
-class MultiPoint : Geometry() {
+import org.chrishatton.geojson.Position
 
+/**
+ * https://tools.ietf.org/html/rfc7946#section-3.1.3
+ */
+class MultiPoint( coordinates: List<Position> ) : Geometry<List<Position>>( coordinates ), MultiGeometry<Point> {
+    override fun split(): List<Point> = coordinates.map( ::Point )
 }

@@ -12,22 +12,22 @@ import kotlin.jvm.java
 /**
  * Created by Chris on 30/07/2017.
  */
-class GeometryDeserializer : JsonDeserializer<Geometry> {
+class GeometryDeserializer : JsonDeserializer<Geometry<*>> {
 
     @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): Geometry {
+    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): Geometry<*> {
 
         val jobject = json.asJsonObject
 
         val typeName : String = jobject.get("type").asString
 
         val type : Type = when(typeName) {
-            "Point"           -> Point::class.java
-            "MultiPoint"      -> MultiPoint::class.java
-            "LineString"      -> LineString::class.java
-            "MultiLineString" -> MultiLineString::class.java
+            "Point"           -> Point           ::class.java
+            "MultiPoint"      -> MultiPoint      ::class.java
+            "LineString"      -> LineString      ::class.java
+            "MultiLineString" -> MultiLineString ::class.java
             "Polygon"         -> Polygon         ::class.java
-            "MultiPolygon"    -> MultiPolygon::class.java
+            "MultiPolygon"    -> MultiPolygon    ::class.java
 
             else -> throw JsonParseException("Unrecognised geometry type '$type'")
         }

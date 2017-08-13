@@ -1,8 +1,9 @@
 package org.chrishatton.geojson
 
 /**
- * Created by Chris on 30/07/2017.
+ * https://tools.ietf.org/html/rfc7946
+ * Section 3
  */
-abstract class GeoJsonObject {
+abstract class GeoJsonObject() {
 
 }

@@ -1,7 +1,19 @@
 package org.chrishatton.geojson.geometry
 
-import org.chrishatton.geojson.geometry.Geometry
+import org.chrishatton.geojson.CoordinatesValidator
+import org.chrishatton.geojson.Position
 
-class MultiPolygon : Geometry() {
+/**
+ * https://tools.ietf.org/html/rfc7946#section-3.1.7
+ */
+class MultiPolygon( coordinates: List<List<Position>> ) : Geometry<List<List<Position>>>( coordinates ), MultiGeometry<Polygon> {
+
+    companion object : CoordinatesValidator<List<List<Position>>,MultiPolygon> {
+        override fun validateCoordinates(coordinates: List<List<Position>>) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+    }
+
+    override fun split(): List<Polygon> = coordinates.map( ::Polygon )
 
 }

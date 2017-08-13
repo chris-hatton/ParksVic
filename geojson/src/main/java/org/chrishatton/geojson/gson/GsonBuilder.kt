@@ -9,5 +9,5 @@ import org.chrishatton.geojson.geometry.Geometry
  */
 fun GsonBuilder.registerGeoJsonTypeAdapters() {
     this.registerTypeAdapter( GeoJsonObject::class.java, GeoJsonObjectDeserializer() )
-    this.registerTypeAdapter( Geometry::class.java, GeometryDeserializer() )
+    this.registerTypeAdapter( Geometry     ::class.java, GeometryDeserializer()      )
 }

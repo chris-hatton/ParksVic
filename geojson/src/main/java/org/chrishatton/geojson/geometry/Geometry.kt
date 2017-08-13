@@ -1,7 +1,8 @@
 package org.chrishatton.geojson.geometry
 
+import org.chrishatton.geojson.GeoJsonObject
+
 /**
- * Created by Chris on 30/07/2017.
+ * https://tools.ietf.org/html/rfc7946#section-3.1
  */
-abstract class Geometry {
-}
+abstract class Geometry<out C>(val coordinates: C ) : GeoJsonObject()

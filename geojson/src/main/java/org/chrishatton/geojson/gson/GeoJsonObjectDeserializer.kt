@@ -9,16 +9,11 @@ import org.chrishatton.geojson.FeatureCollection
 import org.chrishatton.geojson.geometry.*
 import java.lang.reflect.Type
 
-/**
- * Created by Chris on 30/07/2017.
- */
-/**
- * Created by Chris on 30/07/2017.
- */
-class GeoJsonObjectDeserializer : JsonDeserializer<Geometry> {
+
+class GeoJsonObjectDeserializer : JsonDeserializer<Geometry<*>> {
 
     @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): Geometry {
+    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): Geometry<*> {
 
         val jobject = json.asJsonObject
 
