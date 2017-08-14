@@ -6,9 +6,9 @@ import org.chrishatton.geojson.Position
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.5
  */
-class MultiLineString( coordinates: List<List<Position>> ) : Geometry<List<List<Position>>>( coordinates ), MultiGeometry<LineString> {
+class MultiLineString( coordinates: List<LineStringCoordinates> ) : Geometry<List<LineStringCoordinates>>( coordinates ), MultiGeometry<LineString> {
 
-    companion object : CoordinatesValidator<List<List<Position>>,MultiLineString> {
+    companion object : CoordinatesValidator<List<LineStringCoordinates>,MultiLineString> {
 
         /** Each child component of the [MultiLineString] must be [LineString] compliant. */
         override fun validateCoordinates(coordinates: List<List<Position>>) {

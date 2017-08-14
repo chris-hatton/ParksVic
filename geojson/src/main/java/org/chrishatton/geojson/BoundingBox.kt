@@ -3,6 +3,12 @@ package org.chrishatton.geojson
 import org.chrishatton.geojson.geometry.Point
 
 /**
+ * Although in broad conceptual terms, a 'Bounding Box' is a geometry, under the GeoJSON
+ * specification a bounding box is not classified as a such.
+ *
+ * A bounding box in GeoJSON is used only to refine requests for geo-spatial data to a targeted
+ * region, rather than in specifying features having box-like geometry.
+ *
  * https://tools.ietf.org/html/rfc7946#section-5
  */
 data class BoundingBox(

@@ -2,6 +2,7 @@ package org.chrishatton.geojson.gson
 
 import com.google.gson.GsonBuilder
 import org.chrishatton.geojson.GeoJsonObject
+import org.chrishatton.geojson.Position
 import org.chrishatton.geojson.geometry.Geometry
 
 /**
@@ -10,4 +11,5 @@ import org.chrishatton.geojson.geometry.Geometry
 fun GsonBuilder.registerGeoJsonTypeAdapters() {
     this.registerTypeAdapter( GeoJsonObject::class.java, GeoJsonObjectDeserializer() )
     this.registerTypeAdapter( Geometry     ::class.java, GeometryDeserializer()      )
+    this.registerTypeAdapter( Position     ::class.java, PositionTypeAdapter()       )
 }

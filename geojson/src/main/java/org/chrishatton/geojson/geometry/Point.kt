@@ -2,10 +2,12 @@ package org.chrishatton.geojson.geometry
 
 import org.chrishatton.geojson.Position
 
+typealias PointCoordinates = Position
+
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.2
  */
-class Point( coordinates: Position ) : Geometry<Position>( coordinates ) {
+class Point( coordinates: PointCoordinates ) : Geometry<PointCoordinates>( coordinates ) {
 
     /**
      * Convenience constructor, forming the mandated 'single Position' coordinate from Latitude

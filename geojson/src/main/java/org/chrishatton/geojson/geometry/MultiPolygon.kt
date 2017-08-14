@@ -6,10 +6,10 @@ import org.chrishatton.geojson.Position
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.7
  */
-class MultiPolygon( coordinates: List<List<Position>> ) : Geometry<List<List<Position>>>( coordinates ), MultiGeometry<Polygon> {
+class MultiPolygon( coordinates: List<PolygonCoordinates> ) : Geometry<List<PolygonCoordinates>>( coordinates ), MultiGeometry<Polygon> {
 
-    companion object : CoordinatesValidator<List<List<Position>>,MultiPolygon> {
-        override fun validateCoordinates(coordinates: List<List<Position>>) {
+    companion object : CoordinatesValidator<List<PolygonCoordinates>,MultiPolygon> {
+        override fun validateCoordinates(coordinates: List<PolygonCoordinates>) {
             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
