@@ -1,6 +1,6 @@
 package org.chrishatton.parksvic.data.adapter
 
-import org.chrishatton.geojson.Feature
+import geojson.Feature
 import org.chrishatton.parksvic.data.model.Site
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatter

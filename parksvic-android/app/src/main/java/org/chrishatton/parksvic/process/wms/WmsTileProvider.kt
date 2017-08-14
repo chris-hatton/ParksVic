@@ -3,9 +3,9 @@ package org.chrishatton.parksvic.process.wms
 import android.util.Log
 import com.google.android.gms.maps.model.UrlTileProvider
 import okhttp3.HttpUrl
-import org.chrishatton.geojson.BoundingBox
-import org.chrishatton.geojson.geometry.Point
-import org.chrishatton.geojson.reference.CRS
+import geojson.BoundingBox
+import geojson.geometry.Point
+import geojson.reference.CRS
 import org.chrishatton.geoklient.model.request.wms.GetMap
 import java.net.URL
 

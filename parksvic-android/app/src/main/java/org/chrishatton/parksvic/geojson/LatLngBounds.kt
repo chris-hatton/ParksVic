@@ -1,8 +1,8 @@
 package org.chrishatton.parksvic.geojson
 
 import com.google.android.gms.maps.model.LatLngBounds
-import org.chrishatton.geojson.BoundingBox
-import org.chrishatton.geojson.geometry.Point
+import geojson.BoundingBox
+import geojson.geometry.Point
 
 
 fun LatLngBounds.toBoundingBoxes() : Array<BoundingBox> {

@@ -11,8 +11,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
-import org.chrishatton.geojson.Feature
-import org.chrishatton.geojson.FeatureCollection
+import geojson.Feature
+import geojson.FeatureCollection
 import org.chrishatton.parksvic.data.adapter.SiteFeatureAdapter
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.data.model.api.ParksWebservice

@@ -1,8 +1,8 @@
 package org.chrishatton.parksvic.data.model.api
 
 import io.reactivex.Observable
-import org.chrishatton.geojson.BoundingBox
-import org.chrishatton.geojson.FeatureCollection
+import geojson.BoundingBox
+import geojson.FeatureCollection
 import retrofit2.http.GET
 import retrofit2.http.Query
 
