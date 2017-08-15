@@ -1,5 +1,7 @@
+import geojson.GeoJsonObject
 import geojson.Position
 import geojson.geometry.Polygon
+import org.junit.Assert
 import org.junit.Test
 
 /**
@@ -12,15 +14,17 @@ class TestGeoJson {
     fun testIt() {
         println("Yo!!")
 
-        val poly : Polygon = Polygon.fromVertexPairs(
+        val polyIn : Polygon = Polygon.fromVertexPairs(
                 (0.0 to 0.0),
                 (1.0 to 0.0),
                 (1.0 to 1.0),
                 (0.0 to 1.0)
             )
 
-        val polyString = poly.toJson()
+        val polyString = polyIn.toJson()
 
-        println(polyString)
+        val polyOut = GeoJsonObject.fromJson<Polygon>( polyString )
+
+        Assert.assertEquals( polyIn, polyOut )
     }
 }

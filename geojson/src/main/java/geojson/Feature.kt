@@ -1,9 +1,9 @@
 package geojson
 
-import geojson.geometry.Point
+import geojson.geometry.Geometry
 
 data class Feature(
         val id         : String,
-        val geometry   : Point,
+        val geometry   : Geometry<*>,
         val properties : Map<String,Any>
-    )
+    ) : GeoJsonObject()

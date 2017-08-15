@@ -9,13 +9,10 @@ import geojson.geometry.Geometry
  * Created by Chris on 30/07/2017.
  */
 fun GsonBuilder.registerGeoJsonTypeAdapters() : GsonBuilder {
-    this.registerTypeAdapter( GeoJsonObject::class.java, GeoJsonObjectDeserializer() )
-    this.registerTypeAdapter( Geometry     ::class.java, GeometryDeserializer()      )
+
     this.registerTypeAdapter( Position     ::class.java, PositionTypeAdapter()       )
 
-    GeometryKey.values().forEach {
-        this.registerTypeAdapter( it.`class`.java, GeometrySerializer() )
-    }
+    this.registerTypeAdapterFactory( GeoJsonObjectTypeAdapterFactory() )
 
     return this
 }

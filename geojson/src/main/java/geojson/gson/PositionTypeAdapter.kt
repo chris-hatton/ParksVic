@@ -12,8 +12,7 @@ import geojson.Position
  */
 class PositionTypeAdapter : TypeAdapter<Position>() {
 
-    override fun write(out: JsonWriter?, value: Position?) {
-        if( out == null ) { return }
+    override fun write(out: JsonWriter, value: Position?) {
 
         if( value == null ) {
             out.nullValue()
@@ -26,8 +25,7 @@ class PositionTypeAdapter : TypeAdapter<Position>() {
         }
     }
 
-    override fun read(`in`: JsonReader?): Position {
-        if( `in` == null ) { throw Exception() }
+    override fun read(`in`: JsonReader): Position {
 
         `in`.beginArray()
         val longitude : Double = `in`.nextDouble()
