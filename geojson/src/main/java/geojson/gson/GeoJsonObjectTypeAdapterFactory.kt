@@ -3,11 +3,9 @@ package geojson.gson
 import com.google.gson.*
 import com.google.gson.internal.bind.TreeTypeAdapter
 import com.google.gson.reflect.TypeToken
-import geojson.Feature
-import geojson.FeatureCollection
-import geojson.GeoJsonObject
-import geojson.Position
+import geojson.*
 import geojson.geometry.*
+import geojson.geometry.impl.*
 import java.lang.reflect.Type
 
 class GeoJsonObjectTypeAdapterFactory : TypeAdapterFactory {
@@ -31,27 +29,47 @@ class GeoJsonObjectTypeAdapterFactory : TypeAdapterFactory {
         } else null
     }
 
+    private enum class Key(val string: String) {
+        COORDINATES("coordinates"),
+        FEATURES   ("features"),
+        TYPE       ("type");
+
+        override fun toString(): String = string
+    }
+
     private class GeoJsonObjectDeserializer<T:GeoJsonObject>(val gson: Gson, val skipPast: TypeAdapterFactory) : JsonDeserializer<T> {
 
         @Throws(JsonParseException::class)
         override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): T {
-            val typeName : String = json.asJsonObject.get(GeoJsonObjectType.key).asString
+            val typeName : String = json.asJsonObject.get(Key.TYPE.string).asString
             val geoJsonType : GeoJsonObjectType = GeoJsonObjectType.forString( typeName ) ?: throw JsonParseException("Unrecognised geometry type '$typeName'")
 
-            fun readPosition() : Position {
-                TODO()
+            fun readPosition( element: JsonElement ) : Position {
+                val array = element.asJsonArray ?: throw geojson.Exception.IllegalFormat()
+                if( array.size() < 2 ) throw geojson.Exception.IllegalFormat("A GeoJSON Position must have at least two elements")
+                val longitude : Double  = array.get(0)?.asNumber?.toDouble() ?: throw geojson.Exception.IllegalFormat()
+                val latitude  : Double  = array.get(1)?.asNumber?.toDouble() ?: throw geojson.Exception.IllegalFormat()
+                val altitude  : Double? = if( array.size() >= 3 ) array.get(2).asNumber?.toDouble() else null
+                return Position(longitude,latitude,altitude)
             }
 
-            fun readListOfPositions() : List<Position> {
-                TODO()
+            fun readListOfPositions( element: JsonElement ) : List<Position> {
+                val array = element.asJsonArray ?: throw geojson.Exception.IllegalFormat()
+                return array.map { readPosition(it) }
             }
 
-            fun readListOfListOfPositions() : List<List<Position>> {
-                TODO()
+            fun readListOfListOfPositions( element: JsonElement ) : List<List<Position>> {
+                val array = element.asJsonArray ?: throw geojson.Exception.IllegalFormat()
+                return array.map { readListOfPositions(it) }
             }
 
-            fun readListOfListOfListOfPositions() : List<List<List<Position>>> {
-                TODO()
+            fun readListOfListOfListOfPositions( element: JsonElement ) : List<List<List<Position>>> {
+                val array = element.asJsonArray ?: throw geojson.Exception.IllegalFormat()
+                return array.map { readListOfListOfPositions(it) }
+            }
+
+            fun readCoordinates( element: JsonElement ) : JsonElement {
+                return (element as? JsonObject)?.get(Key.COORDINATES.string) ?: throw geojson.Exception.IllegalFormat()
             }
 
             @Suppress("UNCHECKED_CAST")
@@ -60,12 +78,12 @@ class GeoJsonObjectTypeAdapterFactory : TypeAdapterFactory {
                 GeoJsonObjectType.FEATURE            -> TODO()
                 GeoJsonObjectType.FEATURE_COLLECTION -> TODO()
 
-                GeoJsonObjectType.POINT              -> Point          ( coordinates = readPosition()                    ) as T
-                GeoJsonObjectType.MULTI_POINT        -> MultiPoint     ( coordinates = readListOfPositions()             ) as T
-                GeoJsonObjectType.LINE_STRING        -> LineString     ( coordinates = readListOfPositions()             ) as T
-                GeoJsonObjectType.MULTI_LINE_STRING  -> MultiLineString( coordinates = readListOfListOfPositions()       ) as T
-                GeoJsonObjectType.POLYGON            -> Polygon        ( coordinates = readListOfListOfPositions()       ) as T
-                GeoJsonObjectType.MULTI_POLYGON      -> MultiPolygon   ( coordinates = readListOfListOfListOfPositions() ) as T
+                GeoJsonObjectType.POINT              -> Point(coordinates = readPosition(readCoordinates(json))) as T
+                GeoJsonObjectType.MULTI_POINT        -> MultiPoint(coordinates = readListOfPositions(readCoordinates(json))) as T
+                GeoJsonObjectType.LINE_STRING        -> LineString(coordinates = readListOfPositions(readCoordinates(json))) as T
+                GeoJsonObjectType.MULTI_LINE_STRING  -> MultiLineString( coordinates = readListOfListOfPositions       ( readCoordinates(json) ) ) as T
+                GeoJsonObjectType.POLYGON            -> Polygon(coordinates = readListOfListOfPositions(readCoordinates(json))) as T
+                GeoJsonObjectType.MULTI_POLYGON      -> MultiPolygon(coordinates = readListOfListOfListOfPositions(readCoordinates(json))) as T
             }
         }
     }
@@ -74,43 +92,47 @@ class GeoJsonObjectTypeAdapterFactory : TypeAdapterFactory {
 
         override fun serialize(src: T, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
 
-            fun writePosition( coordinates: Position ) {
-                TODO()
+            fun writePosition( coordinates: Position ) : JsonArray {
+                return JsonArray().apply {
+                    add( coordinates.longitude )
+                    add( coordinates.latitude  )
+                    coordinates.altitude?.let( this::add )
+                }
             }
 
-            fun writeListOfPositions( coordinates: List<Position> ) {
-                TODO()
+            fun writeListOfPositions( coordinates: List<Position> ) : JsonArray {
+                return JsonArray().apply { coordinates.map( ::writePosition ).forEach( this::add ) }
             }
 
-            fun writeListOfListOfPositions( coordinates: List<List<Position>>) {
-                TODO()
+            fun writeListOfListOfPositions( coordinates: List<List<Position>>) : JsonArray {
+                return JsonArray().apply { coordinates.map( ::writeListOfPositions ).forEach( this::add ) }
             }
 
-            fun writeListOfListOfListOfPositions( coordinates: List<List<List<Position>>> ) {
-                TODO()
+            fun writeListOfListOfListOfPositions( coordinates: List<List<List<Position>>> ) : JsonArray {
+                return JsonArray().apply { coordinates.map( ::writeListOfListOfPositions ).forEach( this::add ) }
             }
 
-            val geoJsonType : GeoJsonObjectType = GeoJsonObjectType.values().find { it.`class` == src::class } ?: throw Exception()
+            fun writeGeometry( coordinates: JsonArray ) : JsonObject {
+                return JsonObject().apply { add( Key.COORDINATES.string, coordinates ) }
+            }
 
-            when( src ) {
+            val jsonObject : JsonObject = when( src ) {
 
                 is Feature           -> TODO()
                 is FeatureCollection -> TODO()
 
-                is Point            -> writePosition                   ( src.coordinates )
-                is MultiPoint       -> writeListOfPositions            ( src.coordinates )
-                is LineString       -> writeListOfPositions            ( src.coordinates )
-                is MultiLineString  -> writeListOfListOfPositions      ( src.coordinates )
-                is Polygon          -> writeListOfListOfPositions      ( src.coordinates )
-                is MultiPolygon     -> writeListOfListOfListOfPositions( src.coordinates )
+                is Point -> writeGeometry( coordinates = writePosition                   ( src.coordinates ) )
+                is MultiPoint -> writeGeometry( coordinates = writeListOfPositions            ( src.coordinates ) )
+                is LineString -> writeGeometry( coordinates = writeListOfPositions            ( src.coordinates ) )
+                is MultiLineString  -> writeGeometry( coordinates = writeListOfListOfPositions      ( src.coordinates ) )
+                is Polygon -> writeGeometry( coordinates = writeListOfListOfPositions      ( src.coordinates ) )
+                is MultiPolygon -> writeGeometry( coordinates = writeListOfListOfListOfPositions( src.coordinates ) )
+
+                else -> throw Exception()
             }
 
-            val typeToken = TypeToken.get(src::class.java)
-            @Suppress("UNCHECKED_CAST")
-            val delegateAdapter : TypeAdapter<T> = gson.getDelegateAdapter(skipPast,typeToken) as TypeAdapter<T>
-
-            val jsonObject = delegateAdapter.toJsonTree(src) as JsonObject
-            jsonObject.addProperty( "type", geoJsonType.name )
+            val geoJsonType : GeoJsonObjectType = GeoJsonObjectType.forObject(src) ?: throw geojson.Exception.UnsupportedType( src::class )
+            jsonObject.addProperty( Key.TYPE.string, geoJsonType.toString())
 
             return jsonObject
         }

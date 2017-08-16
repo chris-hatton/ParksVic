@@ -1,7 +1,5 @@
 package org.chrishatton.geoklient.model
 
-import geojson.reference.CRS
-
 /**
  * Kotlin sealed-class model of the various representations of
  * Elevation allowable in the OpenGIS specification.

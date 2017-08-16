@@ -1,6 +1,8 @@
 package geojson.geometry
 
 import geojson.Position
+import geojson.geometry.impl.LineString
+import geojson.geometry.impl.LineStringCoordinates
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.5

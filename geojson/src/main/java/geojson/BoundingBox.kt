@@ -1,6 +1,6 @@
 package geojson
 
-import geojson.geometry.Point
+import geojson.geometry.impl.Point
 
 /**
  * Although in broad conceptual terms, a 'Bounding Box' is a geometry, under the GeoJSON
@@ -21,6 +21,6 @@ data class BoundingBox(
     }
 
     companion object {
-        var all : BoundingBox = BoundingBox( southWest = Point(-180.0,-90.0), northEast = Point(180.0,90.0) )
+        var all : BoundingBox = BoundingBox( southWest = Point(-180.0, -90.0), northEast = Point(180.0, 90.0))
     }
 }

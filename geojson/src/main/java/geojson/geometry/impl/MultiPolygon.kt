@@ -1,4 +1,7 @@
-package geojson.geometry
+package geojson.geometry.impl
+
+import geojson.geometry.Geometry
+import geojson.geometry.MultiGeometry
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.7
@@ -7,10 +10,10 @@ class MultiPolygon( coordinates: List<PolygonCoordinates> ) : Geometry<List<Poly
 
     override fun split(): List<Polygon> = coordinates.map( ::Polygon )
 
-    companion object : MultiGeometry.Companion<Polygon,PolygonCoordinates,MultiPolygon> {
+    companion object : MultiGeometry.Companion<Polygon, PolygonCoordinates, MultiPolygon> {
 
         override fun join(geometries: List<Polygon>): MultiPolygon {
-            return MultiPolygon( coordinates = geometries.map { it.coordinates } )
+            return MultiPolygon(coordinates = geometries.map { it.coordinates })
         }
 
         override fun validateCoordinates(coordinates: List<PolygonCoordinates>) {

@@ -1,7 +1,6 @@
 package org.chrishatton.geoklient.model.request.wms
 
 import geojson.BoundingBox
-import geojson.reference.CRS
 import org.chrishatton.geoklient.model.*
 
 /**

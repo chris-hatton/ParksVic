@@ -27,7 +27,7 @@ sealed class CRS(val nameSpace: String) {
 
             private val separator = ':'
 
-            val default = WGS84
+            val default = Layer.WGS84
 
             // Two different registrations of the same Geodetic / Ellipsoid Sphere coordinate system
             val WGS84    : Layer = Layer(nameSpace = Namespace.CRS.toString(), name = "84")

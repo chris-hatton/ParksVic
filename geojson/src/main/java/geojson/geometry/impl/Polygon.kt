@@ -1,25 +1,28 @@
-package geojson.geometry
+package geojson.geometry.impl
 
 import geojson.Exception
 import geojson.LinearRing
 import geojson.Position
+import geojson.geometry.Geometry
 
 typealias PolygonCoordinates = List<List<Position>>
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.6
  */
-class Polygon( coordinates: PolygonCoordinates ) : Geometry<PolygonCoordinates>( coordinates ) {
+class Polygon internal constructor( coordinates: PolygonCoordinates) : Geometry<PolygonCoordinates>( coordinates ) {
 
-    companion object : Geometry.Companion<Polygon,PolygonCoordinates> {
+    companion object : Geometry.Companion<Polygon, PolygonCoordinates> {
+
+        override fun fromCoordinates(coordinates: PolygonCoordinates): Polygon = Polygon(coordinates)
 
         fun fromVertexPairs( vararg vertexPairs: Pair<Double,Double> ) : Polygon {
             val vertices : List<Position> = vertexPairs.map { Position( it.first, it.second ) }
-            return Polygon.fromVertices( vertices )
+            return fromVertices(vertices)
         }
 
-        fun fromVertices( vertices: List<Position> ) : Polygon {
-            return Polygon( coordinates = listOf( vertices + vertices.first() ) )
+        override fun fromVertices( vertexPositions: List<Position> ) : Polygon {
+            return Polygon(coordinates = listOf(vertexPositions + vertexPositions.first()))
         }
 
         override fun validateCoordinates(coordinates: PolygonCoordinates) {

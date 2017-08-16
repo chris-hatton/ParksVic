@@ -1,6 +1,9 @@
 import geojson.GeoJsonObject
-import geojson.Position
-import geojson.geometry.Polygon
+import geojson.geometry.impl.LineString
+import geojson.geometry.impl.Point
+import geojson.geometry.impl.Polygon
+import geojson.gson.GeoJsonObjectType
+import junit.framework.AssertionFailedError
 import org.junit.Assert
 import org.junit.Test
 
@@ -11,20 +14,41 @@ import org.junit.Test
 class TestGeoJson {
 
     @Test
-    fun testIt() {
-        println("Yo!!")
+    fun testCommutePoint() {
+        val point : Point = Point( latitude = 1.0, longitude = 1.0 )
+        testCommuteJson( geoJsonObject = point )
+    }
 
-        val polyIn : Polygon = Polygon.fromVertexPairs(
+    @Test
+    fun testCommuteLineString() {
+        val lineString : LineString = LineString.fromVertexPairs(
+                (0.0 to 0.0),
+                (1.0 to 0.0),
+                (1.0 to 1.0)
+        )
+        testCommuteJson( geoJsonObject = lineString )
+    }
+
+    @Test
+    fun testCommutePolygon() {
+        val polygon : Polygon = Polygon.fromVertexPairs(
                 (0.0 to 0.0),
                 (1.0 to 0.0),
                 (1.0 to 1.0),
                 (0.0 to 1.0)
-            )
+        )
+        testCommuteJson( geoJsonObject = polygon )
+    }
 
-        val polyString = polyIn.toJson()
-
-        val polyOut = GeoJsonObject.fromJson<Polygon>( polyString )
-
-        Assert.assertEquals( polyIn, polyOut )
+    inline private fun <reified T:GeoJsonObject> testCommuteJson(geoJsonObject: T ) {
+        val name = GeoJsonObjectType.forObject(geoJsonObject).name
+        println("Converting $name to JSON...")
+        val geoJsonText = geoJsonObject.toJson()
+        println(geoJsonText)
+        println("Converting JSON to $name...")
+        val geoJsonObjectOut : T = GeoJsonObject.fromJson<T>( geoJsonText )
+        println("Comparing...")
+        Assert.assertEquals( geoJsonObject, geoJsonObjectOut )
+        println("Success")
     }
 }

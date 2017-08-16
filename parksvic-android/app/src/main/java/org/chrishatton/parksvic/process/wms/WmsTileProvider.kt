@@ -4,7 +4,7 @@ import android.util.Log
 import com.google.android.gms.maps.model.UrlTileProvider
 import okhttp3.HttpUrl
 import geojson.BoundingBox
-import geojson.geometry.Point
+import geojson.geometry.impl.Point
 import geojson.reference.CRS
 import org.chrishatton.geoklient.model.request.wms.GetMap
 import java.net.URL
@@ -55,8 +55,8 @@ class WmsTileProvider( val baseUrl: HttpUrl, val styledLayers: List<GetMap.Style
         Log.d("TILE", "latitude $north, south $south" )
 
         return BoundingBox(
-                southWest = Point( longitude = west, latitude = south ),
-                northEast = Point( longitude = east, latitude = north )
+                southWest = Point(longitude = west, latitude = south),
+                northEast = Point(longitude = east, latitude = north)
             )
     }
 }

@@ -1,13 +1,15 @@
-package geojson.geometry
+package geojson.geometry.impl
 
+import geojson.Exception
 import geojson.Position
+import geojson.geometry.Geometry
 
 typealias PointCoordinates = Position
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.2
  */
-class Point( coordinates: PointCoordinates ) : Geometry<PointCoordinates>( coordinates ) {
+class Point( coordinates: PointCoordinates) : Geometry<PointCoordinates>( coordinates ) {
 
     /**
      * Convenience constructor, forming the mandated 'single Position' coordinate from Latitude
@@ -23,9 +25,19 @@ class Point( coordinates: PointCoordinates ) : Geometry<PointCoordinates>( coord
 
     override fun toString(): String = "POINT(${coordinates.latitude}%20$${coordinates.longitude})"
 
-    companion object : Geometry.Companion<Point,Position> {
+    companion object : Geometry.Companion<Point, Position> {
+
+        override fun fromVertices(vertexPositions: List<Position>): Point {
+            return when( vertexPositions.count() ) {
+                1    -> Point( coordinates = vertexPositions[0] )
+                else -> throw Exception.IllegalFormat("When creating a Point from a vertex list, only ONE element is allowed.")
+            }
+        }
+
+        override fun fromCoordinates(coordinates: Position): Point = Point(coordinates)
+
         override fun validateCoordinates(coordinates: Position) {
-            // TODo: Any validation needed?
+            coordinates.validate()
         }
     }
 }

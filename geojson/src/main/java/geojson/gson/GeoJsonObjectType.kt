@@ -1,9 +1,11 @@
 package geojson.gson
 
+import geojson.Exception
 import geojson.Feature
 import geojson.FeatureCollection
 import geojson.GeoJsonObject
 import geojson.geometry.*
+import geojson.geometry.impl.*
 import kotlin.reflect.KClass
 
 /**
@@ -17,25 +19,25 @@ enum class GeoJsonObjectType(private val string: String, val `class`: KClass<*>)
     FEATURE_COLLECTION("FeatureCollection", FeatureCollection ::class ),
 
     // Geometries
-    POINT             ("Point"            , Point             ::class ),
-    MULTI_POINT       ("MultiPoint"       , MultiPoint        ::class ),
-    LINE_STRING       ("LineString"       , LineString        ::class ),
+    POINT             ("Point"            , Point::class ),
+    MULTI_POINT       ("MultiPoint"       , MultiPoint::class ),
+    LINE_STRING       ("LineString"       , LineString::class ),
     MULTI_LINE_STRING ("MultiLineString"  , MultiLineString   ::class ),
-    POLYGON           ("Polygon"          , Polygon           ::class ),
-    MULTI_POLYGON     ("MultiPolygon"     , MultiPolygon      ::class );
+    POLYGON           ("Polygon"          , Polygon::class ),
+    MULTI_POLYGON     ("MultiPolygon"     , MultiPolygon::class );
 
     override fun toString(): String = string
 
     companion object {
 
-        val key : String = "type"
-
-        fun forString( type: String ) : GeoJsonObjectType? {
-            return GeoJsonObjectType.values().find { it.string.equals( other = type, ignoreCase = true) }
+        fun forString( typeName: String ) : GeoJsonObjectType {
+            val type : GeoJsonObjectType? = GeoJsonObjectType.values().find { it.string.equals( other = typeName, ignoreCase = true) }
+            return type ?: throw Exception.UnknownTypeName( typeName )
         }
 
-        fun forObject(`object`: GeoJsonObject ) : GeoJsonObjectType? {
-            return GeoJsonObjectType.values().find { it::class == `object`::class }
+        fun forObject(`object`: GeoJsonObject ) : GeoJsonObjectType {
+            val type : GeoJsonObjectType? =  GeoJsonObjectType.values().find { it.`class` == `object`::class }
+            return type ?: throw Exception.UnsupportedType( `object`::class )
         }
     }
 }

@@ -2,7 +2,7 @@ package org.chrishatton.parksvic.geojson
 
 import com.google.android.gms.maps.model.LatLngBounds
 import geojson.BoundingBox
-import geojson.geometry.Point
+import geojson.geometry.impl.Point
 
 
 fun LatLngBounds.toBoundingBoxes() : Array<BoundingBox> {

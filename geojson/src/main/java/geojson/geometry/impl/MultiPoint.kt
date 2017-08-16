@@ -1,6 +1,8 @@
-package geojson.geometry
+package geojson.geometry.impl
 
 import geojson.Position
+import geojson.geometry.Geometry
+import geojson.geometry.MultiGeometry
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1.3
@@ -12,7 +14,7 @@ class MultiPoint( coordinates: List<PointCoordinates> ) : Geometry<List<PointCoo
     companion object : MultiGeometry.Companion<Point, PointCoordinates, MultiPoint> {
 
         override fun join(geometries: List<Point>): MultiPoint {
-            return MultiPoint( coordinates = geometries.map { it.coordinates } )
+            return MultiPoint(coordinates = geometries.map { it.coordinates })
         }
 
         override fun validateCoordinates(coordinates: List<Position>) {
