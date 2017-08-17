@@ -2,6 +2,7 @@ package geojson.geometry
 
 import geojson.GeoJsonObject
 import geojson.Position
+import geojson.geometry.impl.LineString
 
 /**
  * https://tools.ietf.org/html/rfc7946#section-3.1
@@ -18,7 +19,25 @@ abstract class Geometry<out C>(val coordinates: C ) : GeoJsonObject() {
 
         fun fromVertices( vertexPositions: List<Position> ) : G
 
+        fun fromPositions( positions: List<Position> ) : G
+
         fun fromCoordinates( coordinates: C ) : G
+
+        fun fromVertexPairs( vararg vertexPairs: Pair<Double,Double> ) : G {
+            val vertices : List<Position> = vertexPairs.map { Position( it.first, it.second ) }
+            return fromVertices(vertices)
+        }
+
+        interface Closed<out G: Geometry<C>,C> : Companion<G,C> {
+            override fun fromVertices( vertexPositions: List<Position> ) : G {
+                val positions : List<Position> = if(vertexPositions.isEmpty()) emptyList() else vertexPositions + vertexPositions[0]
+                return fromPositions( positions )
+            }
+        }
+
+        interface Open<out G: Geometry<C>,C> : Companion<G,C> {
+            override fun fromVertices( vertexPositions: List<Position> ) : G = fromPositions( vertexPositions )
+        }
     }
 
 //    internal interface InternalCompanion<out G:Geometry<C>,C> {

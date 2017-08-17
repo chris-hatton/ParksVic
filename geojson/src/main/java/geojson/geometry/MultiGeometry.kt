@@ -33,6 +33,8 @@ interface MultiGeometry<out SG> {
 
         fun join( geometries: List<SG> ) : MG
 
+        fun join( vararg geometries: SG ) = join( geometries.toList() )
+
         fun validateCoordinates( coordinates: List<SGC> )
     }
 }

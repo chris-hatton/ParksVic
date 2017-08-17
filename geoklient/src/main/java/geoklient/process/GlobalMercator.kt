@@ -2,6 +2,8 @@ package org.chrishatton.geoklient.process
 
 import geojson.BoundingBox
 
+typealias PointDegrees = geojson.geometry.impl.Point
+
 /**
  * Created by Chris on 12/08/2017.
  */
@@ -104,7 +106,6 @@ import geojson.BoundingBox
 class GlobalMercator( val tileSize: Int = 256 ) {
 
     data class PointMeters(val x: Double, val y: Double) // EPSG:900913 co-ordinates
-    data class PointDegrees( val lat: Double, val lng: Double ) // WGS84 co-ordinates
     data class PointPixels(val x: Int, val y: Int)
     data class Tile( val x: Int, val y: Int )
 
@@ -169,59 +170,63 @@ class GlobalMercator( val tileSize: Int = 256 ) {
         return PixelsToTile( pointPixels )
     }
 
+    data class BoundingBoxMeters( val southWest: PointMeters, val northEast: PointMeters )
+
     /** Returns bounds of the given tile in EPSG:900913 coordinates */
-    fun TileBounds( tile: Tile, zoom: Int ) : BoundingBox {
+    fun TileBounds( tile: Tile, zoom: Int ) : BoundingBoxMeters {
         val min : PointMeters = PixelsToMeters( PointPixels( tile.x * tileSize, tile.y * tileSize), zoom )
         val max : PointMeters = PixelsToMeters( PointPixels( (tile.x+1) * tileSize, (tile.y+1) * tileSize), zoom )
-        return BoundingBox( min, max )
+        return BoundingBoxMeters( southWest = min, northEast = max )
     }
 
 
 
     /** "Returns bounds of the given tile in latutude/longitude using WGS84 datum" */
     fun TileLatLonBounds( tile: Tile, zoom: Int ) : BoundingBox {
-        val bounds = TileBounds( tile.x, tile.y, zoom)
-        val minPoint = MetersToLatLon( bounds.southWest )
-        val maxPoint = MetersToLatLon(bounds[2], bounds[3])
+        val bounds = TileBounds( tile, zoom)
+        val minPoint : PointDegrees = MetersToLatLon( bounds.southWest )
+        val maxPoint : PointDegrees = MetersToLatLon( bounds.northEast )
 
-        return BoundingBox( minLat, minLon, maxLat, maxLon )
+        return BoundingBox( southWest = minPoint, northEast = maxPoint )
     }
-
-
 
     /** "Resolution (meters/pixel) for given zoom level (measured at Equator)" */
-    fun Resolution(zoom ) : Double {
+    fun Resolution( zoom: Int ) : Double {
         // return (2 * math.pi * 6378137) / (self.tileSize * 2**zoom)
-        return self.initialResolution / (2**zoom)
+        return initialResolution / Math.pow(2.0,zoom.toDouble())
     }
 
-
-
     /** Maximal scaledown zoom of the pyramid closest to the pixelSize. */
-    fun ZoomForPixelSize(pixelSize ): Int {
-        for i in range(30):
-        if pixelSize > self.Resolution(i):
-        return i-1 if i!=0 else 0 # We don't want to scale up
+    fun ZoomForPixelSize(pixelSize: Int ): Int {
+        for( i in 1 until 30) {
+            if( pixelSize > Resolution(i) ) {
+                return if( i!=0 ) i-1 else 0  // We don't want to scale up
+            }
+        }
+        return 0
     }
 
     /** Converts TMS tile coordinates to Google Tile coordinates */
-    fun GoogleTile(tx, ty, zoom): {
-        # coordinate origin is moved from bottom-left to top-left corner of the extent
-        return tx, (2**zoom - 1) - ty
+    fun GoogleTile( tile: Tile, zoom: Int ) : Tile {
+        // coordinate origin is moved from bottom-left to top-left corner of the extent
+        return Tile(tile.x, (Math.pow(2.0,zoom.toDouble()).toInt() - 1) - tile.y)
     }
 
     /** "Converts TMS tile coordinates to Microsoft QuadTree" */
-    fun QuadTree(tx, ty, zoom ) : String {
+    fun QuadTree( tile: Tile, zoom: Int ) : String {
         var quadKey = ""
-        val ty = (2**zoom - 1) - ty
-        for i in range(zoom, 0, -1):
-        digit = 0
-        mask = 1 << (i-1)
-        if (tx & mask) != 0:
-        digit += 1
-        if (ty & mask) != 0:
-        digit += 2
-        quadKey += str(digit)
+        val ty : Int = (Math.pow(2.0,zoom.toDouble()).toInt() - 1) - tile.y
+        for( i in zoom downTo 0) {
+            var digit = 0
+            val mask : Int = 1 shl (i - 1)
+            if( (tile.x and mask) != 0) {
+                digit += 1
+            }
+            if( (ty and mask) != 0 ) {
+                digit += 2
+            }
+            quadKey += digit.toString()
+        }
 
         return quadKey
     }

@@ -12,18 +12,11 @@ typealias PolygonCoordinates = List<List<Position>>
  */
 class Polygon internal constructor( coordinates: PolygonCoordinates) : Geometry<PolygonCoordinates>( coordinates ) {
 
-    companion object : Geometry.Companion<Polygon, PolygonCoordinates> {
+    companion object : Geometry.Companion.Closed<Polygon, PolygonCoordinates> {
 
         override fun fromCoordinates(coordinates: PolygonCoordinates): Polygon = Polygon(coordinates)
 
-        fun fromVertexPairs( vararg vertexPairs: Pair<Double,Double> ) : Polygon {
-            val vertices : List<Position> = vertexPairs.map { Position( it.first, it.second ) }
-            return fromVertices(vertices)
-        }
-
-        override fun fromVertices( vertexPositions: List<Position> ) : Polygon {
-            return Polygon(coordinates = listOf(vertexPositions + vertexPositions.first()))
-        }
+        override fun fromPositions(positions: List<Position>): Polygon = fromCoordinates( listOf( positions ) )
 
         override fun validateCoordinates(coordinates: PolygonCoordinates) {
 

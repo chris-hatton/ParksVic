@@ -1,22 +1,31 @@
 import geojson.GeoJsonObject
 import geojson.geometry.impl.LineString
+import geojson.geometry.impl.MultiPoint
 import geojson.geometry.impl.Point
 import geojson.geometry.impl.Polygon
 import geojson.gson.GeoJsonObjectType
-import junit.framework.AssertionFailedError
 import org.junit.Assert
 import org.junit.Test
 
 /**
  * Created by Chris on 14/08/2017.
  */
-
-class TestGeoJson {
+class ValidGeometryCommuteTests {
 
     @Test
     fun testCommutePoint() {
         val point : Point = Point( latitude = 1.0, longitude = 1.0 )
         testCommuteJson( geoJsonObject = point )
+    }
+
+    @Test
+    fun testCommuteMultiPoint() {
+        val multiPoint : MultiPoint = MultiPoint.join(
+                Point.fromVertexPairs( 1.1 to 1.2 ),
+                Point.fromVertexPairs( 1.3 to 1.4 ),
+                Point.fromVertexPairs( 1.5 to 1.6 )
+            )
+        testCommuteJson( geoJsonObject = multiPoint )
     }
 
     @Test

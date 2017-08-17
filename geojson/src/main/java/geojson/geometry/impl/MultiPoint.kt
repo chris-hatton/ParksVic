@@ -1,6 +1,8 @@
 package geojson.geometry.impl
 
+import geojson.Exception
 import geojson.Position
+import geojson.checkAltitudeConsistent
 import geojson.geometry.Geometry
 import geojson.geometry.MultiGeometry
 
@@ -18,7 +20,7 @@ class MultiPoint( coordinates: List<PointCoordinates> ) : Geometry<List<PointCoo
         }
 
         override fun validateCoordinates(coordinates: List<Position>) {
-            //TODO: Implement some rules, any?
+            coordinates.checkAltitudeConsistent()
         }
     }
 }

@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.UrlTileProvider
 import okhttp3.HttpUrl
 import geojson.BoundingBox
 import geojson.geometry.impl.Point
-import geojson.reference.CRS
+import org.chrishatton.geoklient.model.CRS
 import org.chrishatton.geoklient.model.request.wms.GetMap
 import java.net.URL
 

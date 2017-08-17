@@ -7,7 +7,7 @@ class Projections {
 
     companion object {
         fun main( args: Array<String> ) {
-
+/*
             fun Usage(s = ""):
                     print "Usage: globalmaptiles.py [-profile 'mercator'|'geodetic'] zoomlevel lat lon [latmax lonmax]"
             print
@@ -97,6 +97,7 @@ class Projections {
             print "\tgdalwarp -ts 256 256 -te %s %s %s %s %s %s_%s_%s.tif" % (
             bounds[0], bounds[1], bounds[2], bounds[3], "<your-raster-file-in-epsg900913.ext>", tz, tx, ty)
             print
+            */
         }
     }
 }

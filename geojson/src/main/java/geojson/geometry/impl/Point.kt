@@ -25,11 +25,11 @@ class Point( coordinates: PointCoordinates) : Geometry<PointCoordinates>( coordi
 
     override fun toString(): String = "POINT(${coordinates.latitude}%20$${coordinates.longitude})"
 
-    companion object : Geometry.Companion<Point, Position> {
+    companion object : Geometry.Companion.Open<Point, Position> {
 
-        override fun fromVertices(vertexPositions: List<Position>): Point {
-            return when( vertexPositions.count() ) {
-                1    -> Point( coordinates = vertexPositions[0] )
+        override fun fromPositions( positions: List<Position>): Point {
+            return when( positions.count() ) {
+                1    -> Point( coordinates = positions[0] )
                 else -> throw Exception.IllegalFormat("When creating a Point from a vertex list, only ONE element is allowed.")
             }
         }

@@ -63,12 +63,12 @@ class GlobalGeodetic( val tileSize: Int = 256 ) {
 
     /** Returns bounds of the given tile */
     fun TileBounds(tx: Int, ty: Int, zoom: Int ) : BoundingBox {
-        res = 180 / 256.0 / Math.pow(2**zoom
+        val res : Double = 180 / 256.0 / Math.pow(2.0,zoom.toDouble())
         return BoundingBox(
-                        tx*256*res - 180,
-        ty*256*res - 90,
-        (tx+1)*256*res - 180,
-        (ty+1)*256*res - 90
+            tx*256*res - 180,
+            ty*256*res - 90,
+            (tx+1)*256*res - 180,
+            (ty+1)*256*res - 90
         )
     }
 }
