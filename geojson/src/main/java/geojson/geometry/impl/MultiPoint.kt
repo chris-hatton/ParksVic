@@ -15,9 +15,8 @@ class MultiPoint( coordinates: List<PointCoordinates> ) : Geometry<List<PointCoo
 
     companion object : MultiGeometry.Companion<Point, PointCoordinates, MultiPoint> {
 
-        override fun join(geometries: List<Point>): MultiPoint {
-            return MultiPoint(coordinates = geometries.map { it.coordinates })
-        }
+        override fun join(geometries: List<Point>): MultiPoint =
+                MultiPoint(coordinates = geometries.map { it.coordinates })
 
         override fun validateCoordinates(coordinates: List<Position>) {
             coordinates.checkAltitudeConsistent()

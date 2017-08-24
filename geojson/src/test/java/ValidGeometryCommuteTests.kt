@@ -3,7 +3,7 @@ import geojson.geometry.impl.LineString
 import geojson.geometry.impl.MultiPoint
 import geojson.geometry.impl.Point
 import geojson.geometry.impl.Polygon
-import geojson.gson.GeoJsonObjectType
+import geojson.gson.GeoJsonType
 import org.junit.Assert
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class ValidGeometryCommuteTests {
 
     @Test
     fun testCommutePoint() {
-        val point : Point = Point( latitude = 1.0, longitude = 1.0 )
+        val point = Point( latitude = 1.0, longitude = 1.0 )
         testCommuteJson( geoJsonObject = point )
     }
 
@@ -41,16 +41,16 @@ class ValidGeometryCommuteTests {
     @Test
     fun testCommutePolygon() {
         val polygon : Polygon = Polygon.fromVertexPairs(
-                (0.0 to 0.0),
-                (1.0 to 0.0),
-                (1.0 to 1.0),
-                (0.0 to 1.0)
+            (0.0 to 0.0),
+            (1.0 to 0.0),
+            (1.0 to 1.0),
+            (0.0 to 1.0)
         )
         testCommuteJson( geoJsonObject = polygon )
     }
 
     inline private fun <reified T:GeoJsonObject> testCommuteJson(geoJsonObject: T ) {
-        val name = GeoJsonObjectType.forObject(geoJsonObject).name
+        val name = GeoJsonType.forObject(geoJsonObject)?.typeValue
         println("Converting $name to JSON...")
         val geoJsonText = geoJsonObject.toJson()
         println(geoJsonText)

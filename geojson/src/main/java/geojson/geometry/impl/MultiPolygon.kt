@@ -12,9 +12,8 @@ class MultiPolygon( coordinates: List<PolygonCoordinates> ) : Geometry<List<Poly
 
     companion object : MultiGeometry.Companion<Polygon, PolygonCoordinates, MultiPolygon> {
 
-        override fun join(geometries: List<Polygon>): MultiPolygon {
-            return MultiPolygon(coordinates = geometries.map { it.coordinates })
-        }
+        override fun join(geometries: List<Polygon>): MultiPolygon =
+                MultiPolygon(coordinates = geometries.map { it.coordinates })
 
         override fun validateCoordinates(coordinates: List<PolygonCoordinates>) {
             coordinates.forEach( Polygon.Companion::validateCoordinates )
