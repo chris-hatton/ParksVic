@@ -5,12 +5,12 @@ import com.google.android.gms.maps.model.UrlTileProvider
 import okhttp3.HttpUrl
 import geojson.BoundingBox
 import geojson.geometry.impl.Point
-import org.chrishatton.geoklient.model.CRS
-import org.chrishatton.geoklient.model.request.wms.GetMap
+import geoklient.model.CRS
+import geoklient.model.request.wms.GetMap
 import java.net.URL
 
 // Construct with tile size in pixels, normally 256, see parent class.
-class WmsTileProvider( val baseUrl: HttpUrl, val styledLayers: List<GetMap.StyledLayer>, x: Int = 256, y: Int = 256) : UrlTileProvider(x, y) {
+class WmsTileProvider(val baseUrl: HttpUrl, val styledLayers: List<GetMap.StyledLayer>, x: Int = 256, y: Int = 256) : UrlTileProvider(x, y) {
 
     companion object {
         val lngSpan : Double = 360.0

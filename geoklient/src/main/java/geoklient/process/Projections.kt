@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.process
+package geoklient.process
 
 /**
  * Created by Chris on 12/08/2017.

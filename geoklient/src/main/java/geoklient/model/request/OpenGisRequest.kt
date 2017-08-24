@@ -1,8 +1,8 @@
-package org.chrishatton.geoklient.model.request
+package geoklient.model.request
 
 import okhttp3.HttpUrl
 
-abstract class OpenGisRequest {
+abstract class OpenGisRequest( val version : String = OpenGisRequest.version ) {
 
     companion object {
         val version = "1.3.0"

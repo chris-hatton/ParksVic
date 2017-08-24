@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.model
+package geoklient.model
 
 /**
  * Created by Chris on 11/08/2017.

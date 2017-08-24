@@ -29,8 +29,8 @@ import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
-import org.chrishatton.geoklient.model.Layer
-import org.chrishatton.geoklient.model.request.wms.GetMap
+import geoklient.model.Layer
+import geoklient.model.request.wms.GetMap
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes

@@ -1,6 +1,6 @@
-package org.chrishatton.geoklient.model.request.wfs
+package geoklient.model.request.wfs
 
-import org.chrishatton.geoklient.model.request.OpenGisRequest
+import geoklient.model.request.OpenGisRequest
 
 abstract class WebFeatureServiceRequest : OpenGisRequest() {
 

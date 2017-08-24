@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.model
+package geoklient.model
 
 /**
  * Kotlin sealed-class model of the various representations of
@@ -27,7 +27,7 @@ sealed class CRS(val nameSpace: String) {
 
             private val separator = ':'
 
-            val default = Layer.WGS84
+            val default = WGS84
 
             // Two different registrations of the same Geodetic / Ellipsoid Sphere coordinate system
             val WGS84    : Layer = Layer(nameSpace = Namespace.CRS.toString(), name = "84")

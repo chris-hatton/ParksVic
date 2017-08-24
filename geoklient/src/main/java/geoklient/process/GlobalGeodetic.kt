@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.process
+package geoklient.process
 
 import geojson.BoundingBox
 

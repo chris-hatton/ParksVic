@@ -1,7 +1,7 @@
-package org.chrishatton.geoklient.model.request.wms
+package geoklient.model.request.wms
 
 import geojson.BoundingBox
-import org.chrishatton.geoklient.model.*
+import geoklient.model.*
 
 /**
  * Ref: Section 7.3 of OpenGIS Web Map Service WMS Implementation Specification
@@ -27,7 +27,7 @@ class GetMap(
         val dimensions      : kotlin.collections.Map<String,String>? = null
 ) : WebMapServiceRequest() {
 
-    data class StyledLayer( val layer: Layer, val style: Style = Style.default )
+    data class StyledLayer(val layer: Layer, val style: Style = Style.default )
 
     companion object {
         val defaultTileSize : Int = 256

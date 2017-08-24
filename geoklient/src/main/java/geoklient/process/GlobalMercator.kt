@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.process
+package geoklient.process
 
 import geojson.BoundingBox
 
@@ -170,10 +170,10 @@ class GlobalMercator( val tileSize: Int = 256 ) {
         return PixelsToTile( pointPixels )
     }
 
-    data class BoundingBoxMeters( val southWest: PointMeters, val northEast: PointMeters )
+    data class BoundingBoxMeters(val southWest: PointMeters, val northEast: PointMeters)
 
     /** Returns bounds of the given tile in EPSG:900913 coordinates */
-    fun TileBounds( tile: Tile, zoom: Int ) : BoundingBoxMeters {
+    fun TileBounds(tile: Tile, zoom: Int ) : BoundingBoxMeters {
         val min : PointMeters = PixelsToMeters( PointPixels( tile.x * tileSize, tile.y * tileSize), zoom )
         val max : PointMeters = PixelsToMeters( PointPixels( (tile.x+1) * tileSize, (tile.y+1) * tileSize), zoom )
         return BoundingBoxMeters( southWest = min, northEast = max )
@@ -182,7 +182,7 @@ class GlobalMercator( val tileSize: Int = 256 ) {
 
 
     /** "Returns bounds of the given tile in latutude/longitude using WGS84 datum" */
-    fun TileLatLonBounds( tile: Tile, zoom: Int ) : BoundingBox {
+    fun TileLatLonBounds(tile: Tile, zoom: Int ) : BoundingBox {
         val bounds = TileBounds( tile, zoom)
         val minPoint : PointDegrees = MetersToLatLon( bounds.southWest )
         val maxPoint : PointDegrees = MetersToLatLon( bounds.northEast )
@@ -207,13 +207,13 @@ class GlobalMercator( val tileSize: Int = 256 ) {
     }
 
     /** Converts TMS tile coordinates to Google Tile coordinates */
-    fun GoogleTile( tile: Tile, zoom: Int ) : Tile {
+    fun GoogleTile(tile: Tile, zoom: Int ) : Tile {
         // coordinate origin is moved from bottom-left to top-left corner of the extent
         return Tile(tile.x, (Math.pow(2.0,zoom.toDouble()).toInt() - 1) - tile.y)
     }
 
     /** "Converts TMS tile coordinates to Microsoft QuadTree" */
-    fun QuadTree( tile: Tile, zoom: Int ) : String {
+    fun QuadTree(tile: Tile, zoom: Int ) : String {
         var quadKey = ""
         val ty : Int = (Math.pow(2.0,zoom.toDouble()).toInt() - 1) - tile.y
         for( i in zoom downTo 0) {

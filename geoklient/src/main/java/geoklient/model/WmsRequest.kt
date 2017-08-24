@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.model
+package geoklient.model
 
 import geojson.BoundingBox
 import java.awt.Color

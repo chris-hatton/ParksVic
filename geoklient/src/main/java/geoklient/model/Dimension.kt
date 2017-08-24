@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.model
+package geoklient.model
 
 /**
  * Ref: Section C.2

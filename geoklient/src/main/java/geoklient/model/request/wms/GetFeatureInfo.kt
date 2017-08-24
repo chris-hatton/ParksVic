@@ -1,8 +1,8 @@
-package org.chrishatton.geoklient.model.request.wms
+package geoklient.model.request.wms
 
-import org.chrishatton.geoklient.model.ExceptionFormat
-import org.chrishatton.geoklient.model.Layer
-import org.chrishatton.geoklient.model.MimeType
+import geoklient.model.ExceptionFormat
+import geoklient.model.Layer
+import geoklient.model.MimeType
 
 /**
  *

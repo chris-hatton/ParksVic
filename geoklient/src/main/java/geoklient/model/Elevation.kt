@@ -1,4 +1,4 @@
-package org.chrishatton.geoklient.model
+package geoklient.model
 
 /**
  * Kotlin sealed-class model of the various representations of

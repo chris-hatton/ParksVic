@@ -1,7 +1,8 @@
-package geoklient.model.request.wms
+package geoklient.model.request.wfs
 
 import geoklient.model.MimeType
 import geoklient.model.UpdateSequence
+import geoklient.model.request.wms.WebMapServiceRequest
 
 /**
  *
@@ -9,7 +10,7 @@ import geoklient.model.UpdateSequence
 class GetCapabilities(
         val format          : MimeType,
         val updateSequence  : UpdateSequence? = null
-) : WebMapServiceRequest() {
+) : WebFeatureServiceRequest() {
     override val requestIdentifier: String = "GetCapabilities"
 
     override fun collateParameters(parameters: MutableList<Pair<String, String>>) {
