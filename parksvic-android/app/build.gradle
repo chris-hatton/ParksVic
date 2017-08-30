@@ -42,7 +42,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.5+'
 
     compile project(':parksvic')
-    compile project(':geojson')
+    compile project(':geojson-kotlin')
     compile project(':crosswind')
     compile project(':crosswind-android')
     compile project(':geoklient')

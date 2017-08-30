@@ -1,2 +1,2 @@
 include ':app'
-includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-android', 'geoklient'
+includeFlat 'geojson-kotlin', 'parksvic', 'crosswind', 'crosswind-android', 'geoklient'

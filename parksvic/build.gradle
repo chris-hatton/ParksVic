@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
 
-    compile project(':geojson')
+    compile project(':geojson-kotlin')
     compile project(':crosswind')
 
     // Kotlin
