@@ -27,19 +27,19 @@ sealed class CRS(val nameSpace: String) {
 
             private val separator = ':'
 
-            val default = WGS84
-
             // Two different registrations of the same Geodetic / Ellipsoid Sphere coordinate system
             val WGS84    : Layer = Layer(nameSpace = Namespace.CRS.toString(), name = "84")
             val EPSG4326 : Layer = Layer(nameSpace = Namespace.EPSG.toString(), name = "4326")
 
+
+
             // Two different registrations fo the same Spherical Mercator projection (used by web-maps)
 
+
+            val default = WGS84
         }
 
-        override fun toString(): String {
-            return nameSpace + ':' + name
-        }
+        override fun toString(): String = nameSpace + ':' + name
     }
 
     sealed class Vertical( nameSpace: String ) : CRS( nameSpace ) {
