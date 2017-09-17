@@ -7,6 +7,7 @@ import geojson.BoundingBox
 import geojson.geometry.impl.Point
 import opengis.model.CRS
 import opengis.model.request.wms.GetMap
+import opengis.process.okhttp.OpenGisRequestAdapter
 import java.net.URL
 
 // Construct with tile size in pixels, normally 256, see parent class.
@@ -23,14 +24,14 @@ class WmsTileProvider(val baseUrl: HttpUrl, val styledLayers: List<GetMap.Styled
 
         //Log.d("TILE",boundingBox.toString())
 
-        val getMap : GetMap = GetMap(
-                styledLayers = styledLayers,
-                reference    = CRS.Layer( nameSpace = CRS.Namespace.EPSG.name, name = "3857"),
-                boundingBox  = boundingBox,
-                transparent  = true
+        val getMap = GetMap(
+            styledLayers = styledLayers,
+            reference    = CRS.Layer( nameSpace = CRS.Namespace.EPSG.name, name = "3857"),
+            boundingBox  = boundingBox,
+            transparent  = true
         )
 
-        val url = getMap.buildUrl( baseUrl )
+        val url = OpenGisRequestAdapter.url( baseUrl, getMap )
 
         return url.url()
     }

@@ -1,5 +1,5 @@
 include ':app'
-includeFlat 'geojson-kotlin', 'parksvic', 'crosswind', 'crosswind-android', 'opengis-client-kotlin'
+includeFlat 'geojson-kotlin', 'parksvic', 'crosswind', 'crosswind-android', 'opengis-client-kotlin', 'kimage'
 
 project(':opengis-client-kotlin').projectDir = new File(settingsDir,"../opengis-client-kotlin")
 project(':geojson-kotlin'       ).projectDir = new File(settingsDir,"../geojson-kotlin"       )
