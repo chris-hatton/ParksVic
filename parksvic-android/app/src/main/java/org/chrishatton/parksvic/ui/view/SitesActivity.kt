@@ -35,7 +35,7 @@ import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
 import org.chrishatton.parksvic.model.SiteItem
-import org.chrishatton.parksvic.process.wms.WmsTileProvider
+import org.chrishatton.parksvic.data.process.wms.WmsTileProvider
 import org.chrishatton.parksvic.rx.panelState
 import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
 import org.chrishatton.parksvic.ui.contract.DetailLevel

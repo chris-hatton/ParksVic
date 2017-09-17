@@ -25,7 +25,6 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 class SitesPresenter : Presenter<SitesViewContract>() {
 
     override lateinit var view: SitesViewContract

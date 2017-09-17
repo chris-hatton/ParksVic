@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
 
+    compile project(':opengis-client-kotlin')
     compile project(':geojson-kotlin')
     compile project(':crosswind')
 

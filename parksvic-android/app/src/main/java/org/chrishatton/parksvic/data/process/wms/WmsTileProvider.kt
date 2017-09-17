@@ -1,4 +1,4 @@
-package org.chrishatton.parksvic.process.wms
+package org.chrishatton.parksvic.data.process.wms
 
 import android.util.Log
 import com.google.android.gms.maps.model.UrlTileProvider
