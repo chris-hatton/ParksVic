@@ -1,5 +1,6 @@
 package org.chrishatton.parksvic.ui.presenter
 
+import com.google.gson.GsonBuilder
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -13,6 +14,7 @@ import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import geojson.Feature
 import geojson.FeatureCollection
+import geojson.gson.registerGeoJsonTypeAdapters
 import org.chrishatton.parksvic.data.adapter.SiteFeatureAdapter
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.data.model.api.ParksWebservice
@@ -43,12 +45,14 @@ class SitesPresenter : Presenter<SitesViewContract>() {
                 .addInterceptor(interceptor)
                 .build()
 
-        val BASE_URL : String = "http://10.0.1.68:8080/geoserver/"
+        val BASE_URL = "http://10.0.1.68:8080/geoserver/"
+
+        val gson = GsonBuilder().registerGeoJsonTypeAdapters().create()
 
         val retrofit = Retrofit.Builder()
                 .baseUrl( BASE_URL )
                 .client( client )
-                .addConverterFactory( GsonConverterFactory.create() )
+                .addConverterFactory( GsonConverterFactory.create(gson) )
                 .addCallAdapterFactory( RxJava2CallAdapterFactory.create() )
                 .build()
 
@@ -130,7 +134,9 @@ class SitesPresenter : Presenter<SitesViewContract>() {
             .observeOnUiThread()
             .subscribeBy(
                     onNext  = view::setDisplayedSites,
-                    onError = {}
+                    onError = { e ->
+                        println(e)
+                    }
             )
             .addTo(subscriptions)
     }

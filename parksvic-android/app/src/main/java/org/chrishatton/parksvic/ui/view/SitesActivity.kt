@@ -29,8 +29,8 @@ import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
-import geoklient.model.Layer
-import geoklient.model.request.wms.GetMap
+import opengis.model.Layer
+import opengis.model.request.wms.GetMap
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
@@ -192,4 +192,6 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
     override var isMapInteractionEnabled: Boolean
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
         set(value) {}
+
+
 }

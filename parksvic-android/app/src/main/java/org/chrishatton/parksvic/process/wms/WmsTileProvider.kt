@@ -5,8 +5,8 @@ import com.google.android.gms.maps.model.UrlTileProvider
 import okhttp3.HttpUrl
 import geojson.BoundingBox
 import geojson.geometry.impl.Point
-import geoklient.model.CRS
-import geoklient.model.request.wms.GetMap
+import opengis.model.CRS
+import opengis.model.request.wms.GetMap
 import java.net.URL
 
 // Construct with tile size in pixels, normally 256, see parent class.
