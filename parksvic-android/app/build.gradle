@@ -44,6 +44,7 @@ dependencies {
 
     compile 'com.google.maps.android:android-maps-utils:0.5+'
 
+    compile project(':opengis-client-kotlin-android')
     compile project(':opengis-client-kotlin')
     compile project(':parksvic')
     compile project(':geojson-kotlin')

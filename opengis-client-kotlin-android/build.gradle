@@ -1,0 +1,69 @@
+apply plugin: 'com.android.library'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    lintOptions {
+        abortOnError false
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+buildscript {
+
+    ext.kotlin_version = '1.1.50'
+    ext.gson_version   = '2.7'
+    ext.okhttp_version = '3.8.1'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+dependencies {
+
+    compile project (':opengis-client-kotlin')
+    compile project (':geojson-kotlin')
+    compile project (':kimage')
+    compile project (':kimage-android')
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // OkHttp
+    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
+    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    // Gson
+    compile "com.google.code.gson:gson:$gson_version"
+
+}
+
