@@ -1,4 +1,4 @@
-package org.chrishatton.parksvic.data.process.wms
+package opengis.process
 
 import android.util.Log
 import com.google.android.gms.maps.model.UrlTileProvider
@@ -11,7 +11,7 @@ import opengis.process.okhttp.OpenGisRequestAdapter
 import java.net.URL
 
 // Construct with tile size in pixels, normally 256, see parent class.
-class WmsTileProvider(val baseUrl: HttpUrl, val styledLayers: List<GetMap.StyledLayer>, x: Int = 256, y: Int = 256) : UrlTileProvider(x, y) {
+class AndroidWmsTileProvider(val baseUrl: HttpUrl, val styledLayers: List<GetMap.StyledLayer>, x: Int = 256, y: Int = 256) : UrlTileProvider(x, y) {
 
     companion object {
         val lngSpan : Double = 360.0
@@ -47,11 +47,11 @@ class WmsTileProvider(val baseUrl: HttpUrl, val styledLayers: List<GetMap.Styled
         val tileSpanLng : Double = lngSpan / tileCount
         val tileSpanLat : Double = latSpan / tileCount
 
-        val west  : Double =  x    * tileSpanLng - (lngSpan/2)
-        val east  : Double = (x+1) * tileSpanLng - (lngSpan/2)
+        val west  : Double =  x    * tileSpanLng - (lngSpan /2)
+        val east  : Double = (x+1) * tileSpanLng - (lngSpan /2)
 
-        val north : Double = (latSpan/2) - ( y    * tileSpanLat)
-        val south : Double = (latSpan/2) - ((y+1) * tileSpanLat)
+        val north : Double = (latSpan /2) - ( y    * tileSpanLat)
+        val south : Double = (latSpan /2) - ((y+1) * tileSpanLat)
 
         Log.d("TILE", "latitude $north, south $south" )
 

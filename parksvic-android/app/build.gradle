@@ -47,6 +47,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.5+'
 
     compile project(':opengis-client-kotlin')
+    compile project(':opengis-client-kotlin-rx')
     compile project(':opengis-client-kotlin-android')
     compile project(':parksvic')
     compile project(':geojson-kotlin')
@@ -69,8 +70,8 @@ dependencies {
     // ReactiveX
     compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
     compile "io.reactivex.rxjava2:rxjava:$rx_version"
-    compile "io.reactivex.rxjava2:rxandroid:$rx_android_version"
     compile "com.jakewharton.rxbinding2:rxbinding-kotlin:$rx_binding_version"
+    compile "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
     compile 'com.sothree.slidinguppanel:library:3.3.1'
 

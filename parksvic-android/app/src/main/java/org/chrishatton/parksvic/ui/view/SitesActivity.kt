@@ -1,14 +1,12 @@
 package org.chrishatton.parksvic.ui.view
 
 import android.os.Bundle
+import android.text.AndroidCharacter
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.TileOverlayOptions
-import com.google.android.gms.maps.model.TileProvider
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -31,13 +29,16 @@ import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
 import opengis.model.Layer
 import opengis.model.request.wms.GetMap
+import opengis.model.request.wmts.GetTile
+import opengis.model.request.wmts.TileRequest
 import opengis.process.AndroidOpenGisClient
 import opengis.process.OpenGisClient
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
 import org.chrishatton.parksvic.model.SiteItem
-import org.chrishatton.parksvic.data.process.wms.WmsTileProvider
+import opengis.process.AndroidWmsTileProvider
+import opengis.process.AndroidWmtsTileProvider
 import org.chrishatton.parksvic.rx.panelState
 import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
 import org.chrishatton.parksvic.ui.contract.DetailLevel
@@ -91,13 +92,11 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
         this.map = map
 
-        val baseUrl = URL("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")
-        val styledLayers = listOf( GetMap.StyledLayer( Layer( "FORESTS_RECWEB_HISTORIC_RELIC" ) ) )
+        val baseUrl : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
 
-        val tileProvider : TileProvider = WmsTileProvider(
-            baseUrl      = HttpUrl.get(baseUrl)!!,
-            styledLayers = styledLayers
-        )
+        val tileClient = AndroidOpenGisClient(baseUrl)
+
+        val tileProvider : TileProvider = AndroidWmtsTileProvider( client = tileClient, layerName = "FORESTS_RECWEB_HISTORIC_RELIC" )
 
         val tileOverlayOptions = TileOverlayOptions().tileProvider(tileProvider)
         map.addTileOverlay( tileOverlayOptions )
