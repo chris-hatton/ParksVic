@@ -8,8 +8,8 @@ import kimage.model.pixel.RGB
  */
 fun colorToRGB( color: Int ) : RGB {
     return RGB(
-            red   = Color.red  ( color ),
-            green = Color.green( color ),
-            blue  = Color.blue ( color )
+        red   = Color.red  ( color ),
+        green = Color.green( color ),
+        blue  = Color.blue ( color )
     )
 }

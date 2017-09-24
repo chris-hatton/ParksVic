@@ -1,4 +1,4 @@
-<manifest package="org.chrishatton.opengis_client_kotlin_android"
+<manifest package="opengis"
 
           xmlns:android="http://schemas.android.com/apk/res/android"
 >

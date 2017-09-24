@@ -31,6 +31,8 @@ import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
 import opengis.model.Layer
 import opengis.model.request.wms.GetMap
+import opengis.process.AndroidOpenGisClient
+import opengis.process.OpenGisClient
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
@@ -53,6 +55,7 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
     private lateinit var clusterManager : ClusterManager<SiteItem>
     private lateinit var map : GoogleMap
+    private lateinit var openGisClient : OpenGisClient
 
     init {
         environment = androidEnvironment
@@ -60,6 +63,9 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
         RxJavaPlugins.setErrorHandler { e ->
             log(e.stackTrace.toString())
         }
+
+        val baseUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
+        openGisClient = AndroidOpenGisClient(baseUrl)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +102,7 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
         val tileOverlayOptions = TileOverlayOptions().tileProvider(tileProvider)
         map.addTileOverlay( tileOverlayOptions )
 
-        clusterManager = ClusterManager<SiteItem>(this, map)
+        clusterManager = ClusterManager(this, map)
 
         map.setOnCameraIdleListener {
             clusterManager.onCameraIdle()

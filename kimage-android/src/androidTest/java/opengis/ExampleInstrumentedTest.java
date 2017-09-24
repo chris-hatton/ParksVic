@@ -1,4 +1,4 @@
-package org.chrishatton.opengis_client_kotlin_android;
+package opengis;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -24,7 +24,7 @@ public class ExampleInstrumentedTest
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("org.chrishatton.opengis_client_kotlin_android.test",
+        assertEquals("opengis",
                      appContext.getPackageName());
     }
 }
