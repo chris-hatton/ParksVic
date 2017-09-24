@@ -46,12 +46,25 @@ class AndroidWmtsTileProvider(private val client: AndroidOpenGisClient, private 
                 tileRow = y,
                 tileMatrix = zoom.toString()
             )
-            client.execute(tileRequest) { tileIn:Tile ->
-                synchronized(monitor) {
-                    tile = tileIn
-                    monitor.notify()
+
+            val callback = object : OpenGisClient.Callback<Tile> {
+                override fun success(result: Tile) {
+                    synchronized(monitor) {
+                        tile = result
+                        monitor.notify()
+                    }
+                }
+
+                override fun error(error: Throwable) {
+                    synchronized(monitor) {
+                        tile = null
+                        monitor.notify()
+                    }
                 }
             }
+
+            client.execute( tileRequest, callback )
+
             monitor.wait()
             return tile ?: throw Exception.TileUnavailable
         }
