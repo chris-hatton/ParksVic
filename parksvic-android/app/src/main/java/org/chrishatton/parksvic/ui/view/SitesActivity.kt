@@ -1,7 +1,6 @@
 package org.chrishatton.parksvic.ui.view
 
 import android.os.Bundle
-import android.text.AndroidCharacter
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,25 +26,20 @@ import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
-import opengis.model.Layer
-import opengis.model.request.wms.GetMap
-import opengis.model.request.wmts.GetTile
-import opengis.model.request.wmts.TileRequest
 import opengis.process.AndroidOpenGisClient
 import opengis.process.OpenGisClient
+import opengis.process.tile.AndroidWmsTileProvider
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
 import org.chrishatton.parksvic.geojson.toBoundingBoxes
 import org.chrishatton.parksvic.model.SiteItem
-import opengis.process.AndroidWmsTileProvider
-import opengis.process.AndroidWmtsTileProvider
+import opengis.process.tile.AndroidWmtsTileProvider
 import org.chrishatton.parksvic.rx.panelState
 import org.chrishatton.parksvic.rx.slidePanelOverlapHeight
 import org.chrishatton.parksvic.ui.contract.DetailLevel
 import org.chrishatton.parksvic.ui.contract.SitesViewContract
 import org.chrishatton.parksvic.ui.contract.ZoomLevel
 import org.chrishatton.parksvic.ui.presenter.SitesPresenter
-import java.net.URL
 
 
 class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), SitesViewContract {
@@ -56,7 +50,7 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
     private lateinit var clusterManager : ClusterManager<SiteItem>
     private lateinit var map : GoogleMap
-    private lateinit var openGisClient : OpenGisClient
+    private          var openGisClient : OpenGisClient
 
     init {
         environment = androidEnvironment
@@ -92,13 +86,23 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
         this.map = map
 
-        val baseUrl : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
+        //val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
+        val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/gwc/service/wmts")!!
+        val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/ows")!!
 
-        val tileClient = AndroidOpenGisClient(baseUrl)
+        val wmtsTileClient = AndroidOpenGisClient(wmtsBaseUrl)
+        val wmsTileClient = AndroidOpenGisClient(wmsBaseUrl)
 
-        val tileProvider : TileProvider = AndroidWmtsTileProvider( client = tileClient, layerName = "FORESTS_RECWEB_HISTORIC_RELIC" )
+        val layerName = "ParksVic:osm_australia_group"
 
-        val tileOverlayOptions = TileOverlayOptions().tileProvider(tileProvider)
+        val wmtsTileProvider : TileProvider = AndroidWmtsTileProvider(client = wmtsTileClient, layerName = layerName)
+        val wmsTileProvider : TileProvider = AndroidWmsTileProvider(client = wmsTileClient, layerName = layerName)
+
+        val tileOverlayOptions = TileOverlayOptions()
+                .tileProvider(wmsTileProvider)
+                .fadeIn(true)
+                .transparency(0.5f)
+
         map.addTileOverlay( tileOverlayOptions )
 
         clusterManager = ClusterManager(this, map)

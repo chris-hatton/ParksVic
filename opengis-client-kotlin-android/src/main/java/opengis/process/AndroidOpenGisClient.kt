@@ -26,16 +26,10 @@ class AndroidOpenGisClient private constructor(private val okHttpOpenGisClient :
                 imageDeserializer = bitmapDeserializer,
                 imageClass = Bitmap::class
             )
-
-            val tileDeserializer = AndroidMapTileDeserializer()
-
-            // Compose the Android-specific and default result deserializers togther
-            val androidDeserializer = tileDeserializer.then(defaultDeserializer)
-
             return OkHttpOpenGisClient(
                 baseUrl              = baseUrl,
                 okHttpClient         = httpClient,
-                responseDeserializer = androidDeserializer
+                responseDeserializer = defaultDeserializer
             )
         }
     }
