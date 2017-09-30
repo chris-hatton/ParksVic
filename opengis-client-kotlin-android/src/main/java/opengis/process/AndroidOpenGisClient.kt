@@ -14,9 +14,10 @@ class AndroidOpenGisClient private constructor(private val okHttpOpenGisClient :
     constructor(baseUrl : HttpUrl) : this(create(baseUrl))
 
     companion object {
-        private fun create(baseUrl : HttpUrl) : OkHttpOpenGisClient<Bitmap> {
 
-            val httpClient = OkHttpClient.Builder().build()
+        val sharedHttpClient : OkHttpClient by lazy { OkHttpClient.Builder().build() }
+
+        private fun create(baseUrl : HttpUrl, httpClient: OkHttpClient = sharedHttpClient ) : OkHttpOpenGisClient<Bitmap> {
 
             val bitmapDeserializer = { bytes:ByteArray ->
                 BitmapFactory.decodeByteArray( bytes, 0, bytes.size )

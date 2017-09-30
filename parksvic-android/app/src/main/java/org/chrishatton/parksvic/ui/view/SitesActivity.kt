@@ -88,15 +88,19 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
         //val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
         val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/gwc/service/wmts")!!
-        val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/ows")!!
+        //val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/ows")!!
+
+        val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
 
         val wmtsTileClient = AndroidOpenGisClient(wmtsBaseUrl)
         val wmsTileClient = AndroidOpenGisClient(wmsBaseUrl)
 
-        val layerName = "ParksVic:osm_australia_group"
+        //val layerName = "ParksVic:osm_australia_group"
+        //val layerName = "FORESTS_RECWEB_CARPARK"
+        val layerName = "VMTRANS_TR_RAIL_LIGHT"
 
         val wmtsTileProvider : TileProvider = AndroidWmtsTileProvider(client = wmtsTileClient, layerName = layerName)
-        val wmsTileProvider : TileProvider = AndroidWmsTileProvider(client = wmsTileClient, layerName = layerName)
+        val wmsTileProvider  : TileProvider = AndroidWmsTileProvider (client = wmsTileClient,  layerName = layerName)
 
         val tileOverlayOptions = TileOverlayOptions()
                 .tileProvider(wmsTileProvider)
