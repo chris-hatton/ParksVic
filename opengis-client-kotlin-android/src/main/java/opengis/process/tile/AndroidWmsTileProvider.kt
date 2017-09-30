@@ -1,12 +1,12 @@
 package opengis.process.tile
 
-import android.util.Log
 import geojson.BoundingBox
 import opengis.model.CRS
 import opengis.model.Layer
 import opengis.model.Style
 import opengis.model.request.wms.GetMap
 import opengis.process.AndroidOpenGisClient
+import opengis.process.projection.Projection
 import opengis.process.projection.Tile
 
 // Construct with tile size in pixels, normally 256, see parent class.
@@ -37,13 +37,15 @@ class AndroidWmsTileProvider(
             styledLayers : List<GetMap.StyledLayer>
         ) : GetMap<ByteArray> = GetMap(
             styledLayers = styledLayers,
-            reference    = CRS.Layer( nameSpace = CRS.Namespace.EPSG.name, name = "4326"),  //"3857"),
+            reference    = CRS.Layer( nameSpace = CRS.Namespace.EPSG.name, name = "900913"), // "4326" //"3857"),
             transparent  = true,
             boundingBox  = BoundingBox.all  // Will be replaced in [getTileRequest]
         )
     }
 
     override fun getTileRequest(baseRequest: GetMap<ByteArray>, x: Int, y: Int, zoom: Int) : GetMap<ByteArray> = baseRequest.copy(
-        boundingBox = Tile.Google(x,y,zoom).toDegreeBounds().toGeoJsonBoundingBox()
+        boundingBox = Tile.Google(x,y,zoom)
+                .toBounds( projection = Projection.GlobalMercator )
+                .toGeoJsonBoundingBox()
     )
 }
