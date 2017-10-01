@@ -1,15 +1,18 @@
 package opengis.process
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.util.Xml
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import opengis.process.deserialize.OpenGisResponseDeserializer
+import opengis.process.deserialize.impl.BitmapDeserializer
 import opengis.process.okhttp.OkHttpOpenGisClient
+import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserFactory
 
 /**
  * Created by Chris on 23/09/2017.
  */
-class AndroidOpenGisClient private constructor(private val okHttpOpenGisClient : OkHttpOpenGisClient<Bitmap>) : OpenGisClient by okHttpOpenGisClient {
+class AndroidOpenGisClient private constructor(private val okHttpOpenGisClient : OkHttpOpenGisClient) : OpenGisClient by okHttpOpenGisClient {
 
     constructor(baseUrl : HttpUrl) : this(create(baseUrl))
 
@@ -17,20 +20,19 @@ class AndroidOpenGisClient private constructor(private val okHttpOpenGisClient :
 
         val sharedHttpClient : OkHttpClient by lazy { OkHttpClient.Builder().build() }
 
-        private fun create(baseUrl : HttpUrl, httpClient: OkHttpClient = sharedHttpClient ) : OkHttpOpenGisClient<Bitmap> {
+        private fun create(baseUrl : HttpUrl, httpClient: OkHttpClient = sharedHttpClient ) : OkHttpOpenGisClient {
 
-            val bitmapDeserializer = { bytes:ByteArray ->
-                BitmapFactory.decodeByteArray( bytes, 0, bytes.size )
+            val parserFactory = object : XmlPullParserFactory() {
+                override fun newPullParser(): XmlPullParser = Xml.newPullParser()
             }
 
-            val defaultDeserializer = DefaultOpenGisResponseDeserializer(
-                imageDeserializer = bitmapDeserializer,
-                imageClass = Bitmap::class
-            )
+            val androidDeserializer = BitmapDeserializer()
+                    .then(OpenGisResponseDeserializer.createDefault(parserFactory))
+
             return OkHttpOpenGisClient(
                 baseUrl              = baseUrl,
                 okHttpClient         = httpClient,
-                responseDeserializer = defaultDeserializer
+                responseDeserializer = androidDeserializer
             )
         }
     }
