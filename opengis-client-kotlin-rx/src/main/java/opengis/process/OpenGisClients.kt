@@ -1,7 +1,7 @@
 package opengis.process
 
 import io.reactivex.Observable
-import opengis.model.request.OpenGisRequest
+import opengis.model.app.request.OpenGisRequest
 import kotlin.reflect.KClass
 
 

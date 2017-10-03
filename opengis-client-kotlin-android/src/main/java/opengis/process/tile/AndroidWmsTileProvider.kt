@@ -1,10 +1,10 @@
 package opengis.process.tile
 
 import geojson.BoundingBox
-import opengis.model.CRS
-import opengis.model.Layer
-import opengis.model.Style
-import opengis.model.request.wms.GetMap
+import opengis.model.app.CRS
+import opengis.model.app.Layer
+import opengis.model.app.Style
+import opengis.model.app.request.wms.GetMap
 import opengis.process.AndroidOpenGisClient
 import opengis.process.projection.Projection
 import opengis.process.projection.Tile

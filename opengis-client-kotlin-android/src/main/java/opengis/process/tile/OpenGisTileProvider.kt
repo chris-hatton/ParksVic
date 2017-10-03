@@ -1,10 +1,9 @@
 package opengis.process.tile
 
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.google.android.gms.maps.model.Tile
 import com.google.android.gms.maps.model.TileProvider
-import opengis.model.request.OpenGisRequest
+import opengis.model.app.request.OpenGisRequest
 import opengis.process.OpenGisClient
 import opengis.process.execute
 

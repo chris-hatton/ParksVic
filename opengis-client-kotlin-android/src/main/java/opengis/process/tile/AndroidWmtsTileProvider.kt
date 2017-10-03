@@ -1,9 +1,9 @@
 package opengis.process.tile
 
-import opengis.model.Layer
-import opengis.model.MimeType
-import opengis.model.Style
-import opengis.model.request.wmts.GetTile
+import opengis.model.app.Layer
+import opengis.model.app.MimeType
+import opengis.model.app.Style
+import opengis.model.app.request.wmts.GetTile
 import opengis.process.AndroidOpenGisClient
 
 /**
@@ -37,8 +37,8 @@ class AndroidWmtsTileProvider(
                 tileMatrixSet : String,
                 styleName     : String
         ) : GetTile<ByteArray> = GetTile(
-            layer         = Layer( layerName ),
-            style         = Style( styleName ),
+            layer         = Layer(layerName),
+            style         = Style(styleName),
             format        = MimeType.PNG.string,
             tileMatrixSet = tileMatrixSet,
             tileMatrix    = 0.toString(),
