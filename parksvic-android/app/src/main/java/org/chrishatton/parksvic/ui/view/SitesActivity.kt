@@ -81,6 +81,11 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
         sliding_layout.setScrollableView( detailFragment.view.details_table_scroll_view)
     }
 
+    private fun testSomething() {
+        val baseUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
+        
+    }
+
     private fun onMapInitialised( map: GoogleMap ) {
         assertMainThread()
 
