@@ -10,8 +10,8 @@ import opengis.process.AndroidOpenGisClient
  * Created by Chris on 24/09/2017.
  */
 class AndroidWmtsTileProvider(
-                    client           : AndroidOpenGisClient,
-                    baseRequest      : GetTile<ByteArray>,
+        client           : AndroidOpenGisClient,
+        baseRequest      : GetTile<ByteArray>,
         private val tileMatrixMapper : (Int)->String = DefaultGoogleTileMatrixMapper
 ): OpenGisTileProvider<GetTile<ByteArray>>( client, baseRequest ) {
 

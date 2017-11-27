@@ -16,16 +16,16 @@ class AndroidWmsTileProvider(
 ): OpenGisTileProvider<GetMap<ByteArray>>( client, baseRequest ) {
 
     constructor(
-        client    : AndroidOpenGisClient,
-        layerName : String
+            client    : AndroidOpenGisClient,
+            layerName : String
     ) : this (
         client       = client,
         styledLayers = listOf(GetMap.StyledLayer(Layer(layerName), Style.default))
     )
 
     constructor(
-        client       : AndroidOpenGisClient,
-        styledLayers : List<GetMap.StyledLayer>
+            client       : AndroidOpenGisClient,
+            styledLayers : List<GetMap.StyledLayer>
     ) : this(
         client      = client,
         baseRequest = AndroidWmsTileProvider.buildBaseTileRequest(styledLayers)

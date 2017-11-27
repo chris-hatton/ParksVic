@@ -4,12 +4,12 @@ import android.graphics.BitmapFactory
 import com.google.android.gms.maps.model.Tile
 import com.google.android.gms.maps.model.TileProvider
 import opengis.model.app.request.OpenGisRequest
-import opengis.process.OpenGisClient
+import opengis.process.OpenGisRequestProcessor
 import opengis.process.execute
 
 
 abstract class OpenGisTileProvider<TileRequest : OpenGisRequest<ByteArray>> internal constructor(
-        private val client      : OpenGisClient,
+        private val requestProcessor: OpenGisRequestProcessor,
         private val baseRequest : TileRequest
 ) : TileProvider {
 
@@ -32,7 +32,7 @@ abstract class OpenGisTileProvider<TileRequest : OpenGisRequest<ByteArray>> inte
 
             val tileRequest : TileRequest = getTileRequest(baseRequest, x, y, zoom)
 
-            val callback = object : OpenGisClient.Callback<ByteArray> {
+            val callback = object : OpenGisRequestProcessor.Callback<ByteArray> {
                 override fun success(result: ByteArray) {
                     synchronized(monitor) {
 
@@ -62,7 +62,7 @@ abstract class OpenGisTileProvider<TileRequest : OpenGisRequest<ByteArray>> inte
                 }
             }
 
-            client.execute( tileRequest, callback )
+            requestProcessor.execute( tileRequest, callback )
 
             if(!isComplete) {
                 monitor.wait()

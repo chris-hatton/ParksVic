@@ -26,8 +26,10 @@ import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.crosswind.util.log
 import geojson.BoundingBox
+import opengis.model.app.OpenGisServer
+import opengis.model.app.OpenGisService
 import opengis.process.AndroidOpenGisClient
-import opengis.process.OpenGisClient
+import opengis.process.OpenGisRequestProcessor
 import opengis.process.tile.AndroidWmsTileProvider
 import org.chrishatton.parksvic.R
 import org.chrishatton.parksvic.data.model.Site
@@ -40,6 +42,7 @@ import org.chrishatton.parksvic.ui.contract.DetailLevel
 import org.chrishatton.parksvic.ui.contract.SitesViewContract
 import org.chrishatton.parksvic.ui.contract.ZoomLevel
 import org.chrishatton.parksvic.ui.presenter.SitesPresenter
+import java.net.URL
 
 
 class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), SitesViewContract {
@@ -50,7 +53,7 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
     private lateinit var clusterManager : ClusterManager<SiteItem>
     private lateinit var map : GoogleMap
-    private          var openGisClient : OpenGisClient
+    private          var requestProcessor: OpenGisRequestProcessor
 
     init {
         environment = androidEnvironment
@@ -59,8 +62,9 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
             log(e.stackTrace.toString())
         }
 
-        val baseUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
-        openGisClient = AndroidOpenGisClient(baseUrl)
+        val server = OpenGisServer( setOf( OpenGisService.WebMapService( url = URL("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms") ) ) )
+
+        requestProcessor = AndroidOpenGisClient(server)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,21 +95,19 @@ class SitesActivity : PresentedActivity<SitesViewContract, SitesPresenter>(), Si
 
         this.map = map
 
-        //val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
-        val wmtsBaseUrl : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/gwc/service/wmts")!!
-        //val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://10.0.1.68:8080/geoserver/ows")!!
+        val server = OpenGisServer(
+            wmsUrlString  = "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms",
+            wmtsUrlString = "http://10.0.1.68:8080/geoserver/gwc/service/wmts"
+        )
 
-        val wmsBaseUrl  : HttpUrl = HttpUrl.parse("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms")!!
-
-        val wmtsTileClient = AndroidOpenGisClient(wmtsBaseUrl)
-        val wmsTileClient = AndroidOpenGisClient(wmsBaseUrl)
+        val client = AndroidOpenGisClient(server)
 
         //val layerName = "ParksVic:osm_australia_group"
         //val layerName = "FORESTS_RECWEB_CARPARK"
         val layerName = "VMTRANS_TR_RAIL_LIGHT"
 
-        val wmtsTileProvider : TileProvider = AndroidWmtsTileProvider(client = wmtsTileClient, layerName = layerName)
-        val wmsTileProvider  : TileProvider = AndroidWmsTileProvider (client = wmsTileClient,  layerName = layerName)
+        val wmtsTileProvider : TileProvider = AndroidWmtsTileProvider(client = client, layerName = layerName)
+        val wmsTileProvider  : TileProvider = AndroidWmsTileProvider (client = client, layerName = layerName)
 
         val tileOverlayOptions = TileOverlayOptions()
                 .tileProvider(wmsTileProvider)
