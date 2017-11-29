@@ -4,7 +4,9 @@ import android.graphics.BitmapFactory
 import com.google.android.gms.maps.model.Tile
 import com.google.android.gms.maps.model.TileProvider
 import opengis.model.app.request.OpenGisRequest
+import opengis.process.Callback
 import opengis.process.OpenGisRequestProcessor
+import opengis.process.Outcome
 import opengis.process.execute
 
 
@@ -32,32 +34,34 @@ abstract class OpenGisTileProvider<TileRequest : OpenGisRequest<ByteArray>> inte
 
             val tileRequest : TileRequest = getTileRequest(baseRequest, x, y, zoom)
 
-            val callback = object : OpenGisRequestProcessor.Callback<ByteArray> {
-                override fun success(result: ByteArray) {
-                    synchronized(monitor) {
+            val callback : Callback<ByteArray> = { outcome ->
+                when(outcome) {
+                    is Outcome.Success -> {
+                        val result = outcome.result
+                        synchronized(monitor) {
 
-                        val decodeBoundsOptions = BitmapFactory.Options().apply {
-                            inJustDecodeBounds = true
+                            val decodeBoundsOptions = BitmapFactory.Options().apply {
+                                inJustDecodeBounds = true
+                            }
+
+                            BitmapFactory.decodeByteArray(result,0,result.size,decodeBoundsOptions)
+
+                            if( decodeBoundsOptions.outWidth == -1 || decodeBoundsOptions.outHeight == -1 ) {
+                                throw Exception.BadTileData( data = result )
+                            } else {
+                                tile = Tile(decodeBoundsOptions.outWidth,decodeBoundsOptions.outHeight,result)
+                            }
+
+                            monitor.notify()
+                            isComplete = true
                         }
-
-                        BitmapFactory.decodeByteArray(result,0,result.size,decodeBoundsOptions)
-
-                        if( decodeBoundsOptions.outWidth == -1 || decodeBoundsOptions.outHeight == -1 ) {
-                            throw Exception.BadTileData( data = result )
-                        } else {
-                            tile = Tile(decodeBoundsOptions.outWidth,decodeBoundsOptions.outHeight,result)
-                        }
-
-                        monitor.notify()
-                        isComplete = true
                     }
-                }
-
-                override fun error(error: Throwable) {
-                    synchronized(monitor) {
-                        tile = null
-                        monitor.notify()
-                        isComplete = true
+                    is Outcome.Error -> {
+                        synchronized(monitor) {
+                            tile = null
+                            monitor.notify()
+                            isComplete = true
+                        }
                     }
                 }
             }
