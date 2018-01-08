@@ -1,8 +1,8 @@
-rootProject.name = 'parksvic-desktop'
+rootProject.name = 'geobrowser-desktop'
 
 
 include ':gmapsfx'
 project(':gmapsfx').projectDir = new File( rootDir, '../GMapsFX/GMapsFX' )
 
-includeFlat 'geojson', 'parksvic', 'crosswind', 'crosswind-tornadofx', 'geoklient'
+includeFlat 'geojson', 'geobrowser', 'crosswind', 'crosswind-tornadofx', 'opengis-client-kotlin'
 

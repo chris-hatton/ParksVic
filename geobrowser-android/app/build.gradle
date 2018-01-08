@@ -61,7 +61,7 @@ dependencies {
     compile project(':opengis-client-kotlin'), withoutAndroidProvidedXmlModules
     compile project(':opengis-client-kotlin-rx'), withoutAndroidProvidedXmlModules
     compile project(':opengis-client-kotlin-android'), withoutAndroidProvidedXmlModules
-    compile project(':parksvic'), withoutAndroidProvidedXmlModules
+    compile project(':geobrowser'), withoutAndroidProvidedXmlModules
 
     compile project(':geojson-kotlin')
     compile project(':crosswind')
