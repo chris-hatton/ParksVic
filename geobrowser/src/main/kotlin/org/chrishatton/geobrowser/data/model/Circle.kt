@@ -1,4 +1,6 @@
-package org.chrishatton.parksvic.data.model
+package org.chrishatton.geobrowser.data.model
+
+import geojson.geometry.impl.Point
 
 data class Circle(
         val center: Point,

@@ -1,4 +1,4 @@
-package org.chrishatton.parksvic.geojson
+package org.chrishatton.geobrowser.geojson
 
 import com.lynden.gmapsfx.javascript.`object`.LatLong
 import org.chrishatton.geojson.geometry.Point

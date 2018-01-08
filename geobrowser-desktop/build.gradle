@@ -29,7 +29,7 @@ jfx {
     appName = "Parks in Victoria"
     vendor = "Chris Hatton"
 
-    mainClass = "org.chrishatton.parksvic.ParksVicApplication"
+    mainClass = "org.chrishatton.geobrowser.ParksVicApplication"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

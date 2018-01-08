@@ -1,4 +1,4 @@
-package org.chrishatton.parksvic.data.model
+package org.chrishatton.geobrowser.data.model
 
 import com.lynden.gmapsfx.javascript.`object`.LatLong
 

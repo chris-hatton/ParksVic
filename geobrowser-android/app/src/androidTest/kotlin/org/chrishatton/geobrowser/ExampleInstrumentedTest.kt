@@ -23,6 +23,6 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
 
-        assertEquals("org.chrishatton.parksvic", appContext.packageName)
+        assertEquals("org.chrishatton.geobrowser", appContext.packageName)
     }
 }

@@ -1,10 +1,10 @@
-package org.chrishatton.parksvic
+package org.chrishatton.geobrowser
 
 import io.reactivex.rxjavafx.schedulers.JavaFxScheduler
 import javafx.application.Platform
 import org.chrishatton.crosswind.Environment
 import org.chrishatton.crosswind.environment
-import org.chrishatton.parksvic.view.SitesView
+import org.chrishatton.geobrowser.view.SitesView
 import tornadofx.*
 
 class ParksVicApplication : App() {

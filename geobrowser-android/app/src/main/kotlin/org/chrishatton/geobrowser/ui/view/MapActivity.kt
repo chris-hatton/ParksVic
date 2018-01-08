@@ -9,7 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
-import org.chrishatton.parksvic.R
+import org.chrishatton.geobrowser.R
 
 class MapActivity : AppCompatActivity() {
 

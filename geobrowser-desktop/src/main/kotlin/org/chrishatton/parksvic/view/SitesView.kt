@@ -1,4 +1,4 @@
-package org.chrishatton.parksvic.view
+package org.chrishatton.geobrowser.view
 
 import com.github.thomasnield.rxkotlinfx.toObservable
 import com.lynden.gmapsfx.ClusteredGoogleMapView
@@ -11,11 +11,11 @@ import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.ui.view.PresentedView
 import org.chrishatton.crosswind.util.log
 import org.chrishatton.geojson.BoundingBox
-import org.chrishatton.parksvic.data.model.Site
-import org.chrishatton.parksvic.data.model.latLong
-import org.chrishatton.parksvic.geojson.toBoundingBoxes
-import org.chrishatton.parksvic.ui.contract.SitesViewContract
-import org.chrishatton.parksvic.ui.presenter.SitesPresenter
+import org.chrishatton.geobrowser.data.model.Site
+import org.chrishatton.geobrowser.data.model.latLong
+import org.chrishatton.geobrowser.geojson.toBoundingBoxes
+import org.chrishatton.geobrowser.ui.contract.SitesViewContract
+import org.chrishatton.geobrowser.ui.presenter.SitesPresenter
 import java.util.concurrent.TimeUnit
 
 
