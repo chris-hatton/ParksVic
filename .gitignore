@@ -9,10 +9,9 @@
 .externalNativeBuild
 crosswind-android/build
 crosswind-tornadofx/build
-parksvic-android/build
-parksvic-desktop/build
+geobrowser-android/build
+geobrowser-desktop/build
 google_maps_api.xml
-parksvic/build
-parksvic-desktop/classes
-geoklient/build
+geobrowser/build
+geobrowser-desktop/classes
 .idea/
