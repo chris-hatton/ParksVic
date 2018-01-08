@@ -9,7 +9,12 @@ import opengis.process.OpenGisRequestProcessor
 import opengis.process.Outcome
 import opengis.process.execute
 
-
+/**
+ * Abstraction of a TileProvider for an Android MapView,
+ * one which sources image data from an OpenGIS service.
+ *
+ * Concrete implementations of this inc
+ */
 abstract class OpenGisTileProvider<TileRequest : OpenGisRequest<ByteArray>> internal constructor(
         private val requestProcessor: OpenGisRequestProcessor,
         private val baseRequest : TileRequest

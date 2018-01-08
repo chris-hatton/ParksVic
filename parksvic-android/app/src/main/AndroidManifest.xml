@@ -2,8 +2,9 @@
 <manifest package="org.chrishatton.parksvic"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <meta-data android:name="com.google.android.gms.version"
-               android:value="@integer/google_play_services_version" />
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -35,6 +36,12 @@
         <activity
             android:name=".ui.view.SitesActivity"
             android:label="@string/title_activity_parks">
+
+        </activity>
+        <activity
+            android:name=".ui.view.MapActivity"
+            android:label="@string/title_activity_map"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
