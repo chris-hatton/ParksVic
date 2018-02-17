@@ -16,3 +16,7 @@ parksvic/build
 parksvic-desktop/classes
 geoklient/build
 .idea/
+geobrowser-android/app/build
+geobrowser-desktop/build
+geobrowser/build
+geobrowser-android/build
