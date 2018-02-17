@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.chrishatton.geobrowser.org.chrishatton.geobrowser.ui.view.MapActivity">
+    tools:context="org.chrishatton.geobrowser.ui.view.MapActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -33,4 +33,4 @@
         android:layout_height="match_parent"/>
 
 
-    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

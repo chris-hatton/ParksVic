@@ -1,17 +1,23 @@
 package org.chrishatton.geobrowser.ui.view
 
 import android.os.Bundle
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
+import opengis.ui.model.MapViewable
 import org.chrishatton.geobrowser.R
 
 class MapActivity : AppCompatActivity() {
+
+    val layers : BehaviorSubject<List<MapViewable>> = BehaviorSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +28,27 @@ class MapActivity : AppCompatActivity() {
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+        class MapViewableHolder(view: View) : RecyclerView.ViewHolder(view) {
+            var mapViewable : MapViewable? = null
+        }
+
+        layer_list.adapter = object : RecyclerView.Adapter<MapViewableHolder>() {
+
+            override fun getItemViewType(position: Int): Int = when(layers.value[position]) {
+                is
+            }
+
+            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MapViewableHolder {
+
+            }
+
+            override fun getItemCount(): Int = layers.value.size
+
+            override fun onBindViewHolder(holder: MapViewableHolder?, position: Int) {
+                holder?.mapViewable = layers.value[position]
+            }
+        }
 
         //nav_view.setNavigationItemSelectedListener(this)
     }
@@ -51,4 +78,6 @@ class MapActivity : AppCompatActivity() {
     }
 
     //drawer_layout.closeDrawer(GravityCompat.START)
+
+
 }

@@ -12,7 +12,7 @@ import io.reactivex.disposables.Disposable
  * Observable of the [SlidingUpPanelLayout]s panel state.
  */
 fun SlidingUpPanelLayout.panelState() : Observable<PanelState> {
-    return this.createPanelSlideListenerObservable<PanelState> { emitter ->
+    return this.createPanelSlideListenerObservable { emitter ->
         emitter.onNext( this.panelState )
         object : PanelSlideListener {
             override fun onPanelSlide(panel: View?, slideOffset: Float) {}
@@ -29,8 +29,8 @@ fun SlidingUpPanelLayout.panelState() : Observable<PanelState> {
  * One use of this is to add padding to the main panel, so that important content remains in the
  * visible portion while the sliding panel is raised.
  */
-fun SlidingUpPanelLayout.slidePanelOverlapHeight() : Observable<Int> {
-    return this.createPanelSlideListenerObservable<Int> { emitter ->
+fun SlidingUpPanelLayout.slidePanelOverlapHeight() : Observable<Int> =
+    this.createPanelSlideListenerObservable { emitter ->
         object : PanelSlideListener {
             override fun onPanelStateChanged( panel: View?, previousState: PanelState?, newState: PanelState? ) {}
             override fun onPanelSlide(panel: View?, slideOffset: Float) {
@@ -41,14 +41,13 @@ fun SlidingUpPanelLayout.slidePanelOverlapHeight() : Observable<Int> {
             }
         }
     }
-}
 
 /**
  * Utility function to de-duplicate the process for creating Observables based on SlidingUpPanelLayout.PanelSlideListener.
  */
 private fun <T> SlidingUpPanelLayout.createPanelSlideListenerObservable(listenerCreator: (ObservableEmitter<T>)->PanelSlideListener ) : Observable<T> {
     return Observable.create { emitter ->
-        var isDisposed : Boolean = false
+        var isDisposed = false
         val listener : PanelSlideListener = listenerCreator(emitter)
         // Register the listener.
         this.addPanelSlideListener( listener )
