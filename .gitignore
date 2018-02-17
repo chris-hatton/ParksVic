@@ -15,3 +15,7 @@ google_maps_api.xml
 geobrowser/build
 geobrowser-desktop/classes
 .idea/
+geobrowser-android/app/build
+geobrowser-desktop/build
+geobrowser/build
+geobrowser-android/build
