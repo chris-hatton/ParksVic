@@ -12,12 +12,12 @@ import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
-import opengis.ui.model.MapViewable
+import opengis.ui.model.MapViewLayer
 import org.chrishatton.geobrowser.R
 
 class MapActivity : AppCompatActivity() {
 
-    val layers : BehaviorSubject<List<MapViewable>> = BehaviorSubject.create()
+    val layers : BehaviorSubject<List<MapViewLayer>> = BehaviorSubject.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,24 +29,25 @@ class MapActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        class MapViewableHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var mapViewable : MapViewable? = null
+        class MapViewLayerHolder(view: View) : RecyclerView.ViewHolder(view) {
+            var mapViewLayer: MapViewLayer? = null
         }
 
-        layer_list.adapter = object : RecyclerView.Adapter<MapViewableHolder>() {
+        layer_list.adapter = object : RecyclerView.Adapter<MapViewLayerHolder>() {
 
             override fun getItemViewType(position: Int): Int = when(layers.value[position]) {
-                is
+                is MapViewLayer.Feature -> 0
+                is MapViewLayer.Tile<*> -> 1
             }
 
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MapViewableHolder {
-
+            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MapViewLayerHolder {
+                TODO()
             }
 
             override fun getItemCount(): Int = layers.value.size
 
-            override fun onBindViewHolder(holder: MapViewableHolder?, position: Int) {
-                holder?.mapViewable = layers.value[position]
+            override fun onBindViewHolder(holder: MapViewLayerHolder?, position: Int) {
+                holder?.mapViewLayer = layers.value[position]
             }
         }
 
