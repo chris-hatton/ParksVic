@@ -9,9 +9,7 @@ import opengis.model.transport.xml.wmts.WmtsCapabilities
  * Section 7.2.2.1
  * http://portal.opengeospatial.org/files/?artifact_id=35326
  */
-class GetCapabilities(
-        val updateSequence  : UpdateSequence? = null
-) : WebMapTileServiceRequest<WmtsCapabilities>(), GetResourceRepresentation {
+class GetCapabilities(val updateSequence : UpdateSequence? = null) : WebMapTileServiceRequest<WmtsCapabilities>(), GetResourceRepresentation {
     override val requestIdentifier: String = "GetCapabilities"
 
     override fun collateParameters(parameters: MutableList<Pair<String, String>>) {

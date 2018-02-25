@@ -3,7 +3,7 @@ package org.chrishatton.crosswind.ui.presenter
 import io.reactivex.disposables.CompositeDisposable
 import org.chrishatton.crosswind.ui.contract.ViewContract
 
-abstract class Presenter<out T: ViewContract> {
+public abstract class Presenter<out T: ViewContract> {
 
     abstract val view : T
 

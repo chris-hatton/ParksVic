@@ -23,6 +23,7 @@ buildscript {
 }
 
 dependencies {
+    compile project (':crosswind')
     compile project (':geojson-kotlin')
     compile project (':kimage')
 

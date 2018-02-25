@@ -2,31 +2,31 @@ package opengis.ui
 
 import geojson.BoundingBox
 import opengis.model.app.CRS
-import opengis.model.app.request.wmts.Layer
+import opengis.model.app.request.wms.Layer
 import opengis.model.app.Style
 import opengis.model.app.request.wms.GetMap
-import opengis.process.OpenGisHttpClient
+import opengis.process.OpenGisRequestProcessor
 import opengis.process.projection.Projection
 import opengis.process.projection.Tile
 
 class WmsTileProvider(
-        client           : OpenGisHttpClient,
+        requestProcessor : OpenGisRequestProcessor,
         baseRequest      : GetMap<ByteArray>
-): TileProvider<GetMap<ByteArray>>( client, baseRequest ) {
+): TileProvider<GetMap<ByteArray>>(requestProcessor, baseRequest ) {
 
     constructor(
-            client    : OpenGisHttpClient,
-            layerName : String
+            requestProcessor : OpenGisRequestProcessor,
+            layerName        : String
     ) : this (
-            client       = client,
-            styledLayers = listOf(GetMap.StyledLayer(Layer(layerName), Style.default))
+            requestProcessor = requestProcessor,
+            styledLayers     = listOf(GetMap.StyledLayer(Layer(layerName), Style.default))
     )
 
     constructor(
-            client       : OpenGisHttpClient,
-            styledLayers : List<GetMap.StyledLayer>
+            requestProcessor : OpenGisRequestProcessor,
+            styledLayers     : List<GetMap.StyledLayer>
     ) : this(
-            client      = client,
+            requestProcessor = requestProcessor,
             baseRequest = WmsTileProvider.buildBaseTileRequest(styledLayers)
     )
 

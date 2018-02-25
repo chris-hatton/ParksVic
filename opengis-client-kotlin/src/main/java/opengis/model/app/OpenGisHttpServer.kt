@@ -24,7 +24,7 @@ data class OpenGisHttpServer(private val serviceUrls: Map<OpenGisService<*>,URL>
         wfsUrlString  : String? = null,
         wcsUrlString  : String? = null,
         cswUrlString  : String? = null
-    ) : this( serviceUrls = arrayOf<Pair<OpenGisService<*>,URL>?>(
+    ) : this( serviceUrls = arrayOf<Pair<OpenGisService<*>, URL>?>(
             wmsUrlString ?.let { OpenGisService.WebMapService           to URL(it) },
             wmtsUrlString?.let { OpenGisService.WebMapTileService       to URL(it) },
             wfsUrlString ?.let { OpenGisService.WebFeatureService       to URL(it) },
@@ -47,4 +47,8 @@ data class OpenGisHttpServer(private val serviceUrls: Map<OpenGisService<*>,URL>
 
         return serviceUrls[service] ?: throw Exception.UnsupportedService( service )
     }
+
+    fun createGetCapabilitiesRequests( services: Set<OpenGisService<*>> = this.services) : Set<OpenGisRequest<*>> = services
+            .map { it.createGetCapabilitiesRequest() }
+            .toSet()
 }

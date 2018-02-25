@@ -47,7 +47,9 @@ object ServerListLoader {
             val reader = InputStreamReader(it)
             val typeToken : TypeToken<List<OpenGisServerInfo>> = object : TypeToken<List<OpenGisServerInfo>>() {}
             val serverInfo : List<OpenGisServerInfo> = gson.fromJson(reader,typeToken.type)
-            return serverInfo.map(OpenGisServerInfo::toOpenGisServer).toSet()
+            return serverInfo
+                    .map(OpenGisServerInfo::toOpenGisServer)
+                    .toSet()
         }
     }
 }

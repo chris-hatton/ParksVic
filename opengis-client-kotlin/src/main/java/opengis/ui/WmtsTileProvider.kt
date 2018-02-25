@@ -5,22 +5,23 @@ import opengis.model.app.MimeType
 import opengis.model.app.Style
 import opengis.model.app.request.wmts.GetTile
 import opengis.process.OpenGisHttpClient
+import opengis.process.OpenGisRequestProcessor
 import opengis.process.projection.Tile
 
 class WmtsTileProvider(
-        client           : OpenGisHttpClient,
+        requestProcessor : OpenGisRequestProcessor,
         baseRequest      : GetTile<ByteArray>,
         private val tileMatrixMapper : (Int)->String = DefaultGoogleTileMatrixMapper
-): TileProvider<GetTile<ByteArray>>( client, baseRequest ) {
+): TileProvider<GetTile<ByteArray>>(requestProcessor, baseRequest ) {
 
     constructor(
-            client           : OpenGisHttpClient,
+            requestProcessor : OpenGisRequestProcessor,
             layerName        : String,
             tileMatrixSet    : String = DefaultGoogleMatrixSetName,
             style            : String = "",
             tileMatrixMapper : (Int)->String = DefaultGoogleTileMatrixMapper
     ) : this(
-            client           = client,
+            requestProcessor = requestProcessor,
             baseRequest      = buildBaseTileRequest(layerName, tileMatrixSet, style),
             tileMatrixMapper = tileMatrixMapper
     )

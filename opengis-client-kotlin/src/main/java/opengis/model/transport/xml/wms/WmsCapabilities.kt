@@ -1,5 +1,6 @@
 package opengis.model.transport.xml.wms
 
+import opengis.model.transport.xml.ows.CapabilitiesBaseType
 import opengis.model.transport.xml.ows.operation.DCPType
 import opengis.model.transport.xml.ows.operation.OnlineResource
 import opengis.model.transport.xml.ows.operation.URL
@@ -12,7 +13,7 @@ import org.simpleframework.xml.*
 class WmsCapabilities(
         @field:Element(name="Service"    ) var service    : Service?    = null,
         @field:Element(name="Capability" ) var capability : Capability? = null
-) {
+) : CapabilitiesBaseType() {
     /**
      * General service metadata.
      *

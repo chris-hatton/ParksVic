@@ -1,10 +1,12 @@
 package opengis.rx.ui.process
 
 import io.reactivex.Observable
+import opengis.model.app.OpenGisHttpServer
 import opengis.model.app.request.OpenGisRequest
 import opengis.process.Callback
 import opengis.process.OpenGisRequestProcessor
 import opengis.process.Outcome
+import opengis.model.app.MapViewLayer
 import kotlin.reflect.KClass
 
 /**

@@ -34,11 +34,6 @@
             android:value="@string/google_maps_key"/>
 
         <activity
-            android:name=".ui.view.SitesActivity"
-            android:label="@string/title_activity_parks">
-
-        </activity>
-        <activity
             android:name="org.chrishatton.geobrowser.ui.view.MapActivity"
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme.NoActionBar">

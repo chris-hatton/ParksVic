@@ -17,36 +17,52 @@ import opengis.model.transport.xml.wfs.WfsCapabilities
 import opengis.model.transport.xml.wms.WmsCapabilities
 import opengis.model.transport.xml.wmts.WmtsCapabilities
 import opengis.process.OpenGisRequestProcessor
+import kotlin.reflect.KClass
 
 /**
  * Created by Chris on 23/09/2017.
  */
-sealed class OpenGisService<Capabilities> {
+sealed class OpenGisService<Capabilities:Any> {
 
-    abstract fun getCapabilities() : OpenGisRequest<Capabilities>
+    abstract fun createGetCapabilitiesRequest() : OpenGisRequest<Capabilities>
+    abstract val capabilitiesClass : KClass<Capabilities>
 
     object WebFeatureService : OpenGisService<WfsCapabilities>() {
-        override fun getCapabilities() : OpenGisRequest<WfsCapabilities> = GetWfsCapabilities()
+        override fun createGetCapabilitiesRequest() : OpenGisRequest<WfsCapabilities> = GetWfsCapabilities()
+        override val capabilitiesClass: KClass<WfsCapabilities> = WfsCapabilities::class
     }
 
     object WebMapService : OpenGisService<WmsCapabilities>() {
-        override fun getCapabilities() = GetWmsCapabilities()
+        override fun createGetCapabilitiesRequest() = GetWmsCapabilities()
+        override val capabilitiesClass: KClass<WmsCapabilities> = WmsCapabilities::class
     }
 
     object WebMapTileService : OpenGisService<WmtsCapabilities>() {
-        override fun getCapabilities() = GetWmtsCapabilities()
+        override fun createGetCapabilitiesRequest() = GetWmtsCapabilities()
+        override val capabilitiesClass: KClass<WmtsCapabilities> = WmtsCapabilities::class
     }
 
     object WebCoverageService : OpenGisService<WcsCapabilities>() {
-        override fun getCapabilities() = GetWcsCapabilities()
+        override fun createGetCapabilitiesRequest() = GetWcsCapabilities()
+        override val capabilitiesClass: KClass<WcsCapabilities> = WcsCapabilities::class
     }
 
     object CatalogueServicesForWeb : OpenGisService<CswCapabilities>() {
-        override fun getCapabilities() = GetCswCapabilities()
+        override fun createGetCapabilitiesRequest() = GetCswCapabilities()
+        override val capabilitiesClass: KClass<CswCapabilities> = CswCapabilities::class
     }
+
+//    fun getCapabilities( processor: OpenGisRequestProcessor, callback: Callback<Capabilities> ) = processor.execute(
+//            request    = createGetCapabilitiesRequest(),
+//            resultType = this.capabilitiesClass,
+//            callback   = callback
+//        )
 
     companion object {
 
+        /**
+         * Returns a set of all supported OpenGIS service types.
+         */
         fun values() : Set<OpenGisService<*>> = setOf(
             WebFeatureService,
             WebMapService,
@@ -55,6 +71,9 @@ sealed class OpenGisService<Capabilities> {
             CatalogueServicesForWeb
         )
 
+        /**
+         * Maps a given `OpenGisRequest` to the OpenGIS service by which it should be handled.
+         */
         fun <Result> `for`( request: OpenGisRequest<Result>) : OpenGisService<*> = when(request){
             is WebMapServiceRequest<*>          -> OpenGisService.WebMapService
             is WebMapTileServiceRequest<*>      -> OpenGisService.WebMapTileService

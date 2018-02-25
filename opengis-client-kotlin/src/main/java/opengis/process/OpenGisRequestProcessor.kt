@@ -19,8 +19,6 @@ interface OpenGisRequestProcessor {
         object UnhandledRequestType : Exception()
         data class ServerError( val xmlString: String ) : Exception()
     }
-
-
 }
 
 inline fun <reified Result:Any> OpenGisRequestProcessor.execute(

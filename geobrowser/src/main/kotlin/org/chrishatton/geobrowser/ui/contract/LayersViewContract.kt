@@ -1,7 +1,7 @@
 package org.chrishatton.geobrowser.ui.contract
 
 import io.reactivex.functions.Consumer
-import opengis.ui.model.MapViewLayer
+import opengis.model.app.MapViewLayer
 import java.util.SortedSet
 
 /**

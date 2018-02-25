@@ -1,0 +1,18 @@
+[
+	{
+		"name" : "Victorian State Government GeoServer",
+		"services" : {
+			"wfs"  : "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wfs",
+			"wms"  : "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms",
+			"wmts" : "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wmts",
+			"wcs"  : "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wcs"
+		}
+	},
+	{
+		"name" : "New York University GeoServer",
+		"services" : {
+			"wfs"  : "https://maps-public.geo.nyu.edu/geoserver/sdr/wfs",
+			"wms"  : "https://maps-public.geo.nyu.edu/geoserver/sdr/wms"
+		}
+	}
+]
