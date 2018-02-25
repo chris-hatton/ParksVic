@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
 import opengis.process.*
 import opengis.model.app.MapViewLayer
+import opengis.model.app.OpenGisHttpServer
+import opengis.model.app.getMapViewLayers
 import org.chrishatton.geobrowser.R
 
 
@@ -41,10 +43,19 @@ class MapActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         val servers = ServerListLoader.load( context = this, resource = R.raw.server_list )
-        val clients = servers.map { AndroidOpenGisClient(it) }
 
-        //val capabilities = clients.map { it.execute() }
-
+        Outcome.fold<OpenGisHttpServer,Set<MapViewLayer>>(
+            inputs  = servers,
+            caller  = { server, callback -> server.getMapViewLayers(::AndroidOpenGisClient,callback) },
+            initial = emptySet(),
+            reduce  = { a,b -> a+b }
+        ) { outcome ->
+            val layers = when(outcome) {
+                is Outcome.Success ->  outcome.result.toList()
+                is Outcome.Error   -> emptyList()
+            }
+            this.layers.onNext(layers)
+        }
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)

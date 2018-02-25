@@ -45,28 +45,15 @@ fun OpenGisHttpServer.getMapViewLayers(
         } ?: emptySet()
     })
 
-
-
     val mapViewLayerProvisions : Set<MapViewLayerProvision<*>> = setOf(
             wmsMapViewLayerProvision
     )
 
-    mapViewLayerProvisions.forEach { provision ->
-        provision.call { mapLayerOutcome ->
-            outcomes.add(mapLayerOutcome)
-            val isComplete = (outcomes.size==mapViewLayerProvisions.size)
-            if(isComplete) {
-                val successOutcomes = outcomes.filterIsInstance<Outcome.Success<Set<MapViewLayer>>>()
-                val errorOutcomes   = outcomes.filterIsInstance<Outcome.Error<Set<MapViewLayer>>>()
-
-                infix fun Outcome.Success<Set<MapViewLayer>>.add(other: Outcome.Success<Set<MapViewLayer>>) : Outcome.Success<Set<MapViewLayer>> {
-                    return Outcome.Success( result = this.result + other.result )
-                }
-
-                val finalOutcome = errorOutcomes.firstOrNull() ?: successOutcomes.reduce(operation = Outcome.Success<Set<MapViewLayer>>::add)
-
-                callback(finalOutcome)
-            }
-        }
-    }
+    Outcome.fold(
+        inputs   = mapViewLayerProvisions,
+        caller   = MapViewLayerProvision<*>::call,
+        initial  = emptySet(),
+        reduce   = { a,b -> a + b },
+        callback = callback
+    )
 }
