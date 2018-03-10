@@ -22,8 +22,8 @@ class WmsCapabilities(
     @Root(name="Service")
     data class Service(
             @field:Element(name="Name"              ) var name     : String? = null,
-            @field:Element(name="Title"             ) var title    : String? = null,
-            @field:Element(name="Abstract"          ) var abstract : String? = null,
+            @field:Element(name="Title", required = false             ) var title    : String? = null,
+            @field:Element(name="Abstract", required = false          ) var abstract : String? = null,
             @field:ElementList(name="KeywordList", empty = true, entry="Keyword", required = false) var keywords : List<String>? = null,
             @field:Element(name="OnlineResource", required = false ) var onlineResource : String? = null,
             @field:Element(name="ContactInformation") var contact        : Contact? = null,
@@ -39,24 +39,24 @@ class WmsCapabilities(
         @Root(name="Contact")
         data class Contact(
                 @field:Path("ContactPersonPrimary")
-            @field:Element(name="ContactPerson") var name : String? = null,
+            @field:Element(name="ContactPerson", required = false) var name : String? = null,
                 @field:Path("ContactPersonPrimary")
-            @field:Element(name="ContactOrganization") var organization : String? = null,
+            @field:Element(name="ContactOrganization", required = false) var organization : String? = null,
 
-                @field:Element(name="ContactPosition"             ) var position     : String? = null,
+                @field:Element(name="ContactPosition", required = false             ) var position     : String? = null,
                 @field:Element(name="ContactAddress"              ) var address      : Address? = null,
-                @field:Element(name="ContactVoiceTelephone"       ) var telephone    : String? = null,
+                @field:Element(name="ContactVoiceTelephone", required = false       ) var telephone    : String? = null,
                 @field:Element(name="ContactFacsimileTelephone", required = false ) var fax : String? = null, // Not in xsd
-                @field:Element(name="ContactElectronicMailAddress") var emailAddress : String? = null
+                @field:Element(name="ContactElectronicMailAddress", required = false) var emailAddress : String? = null
         ) {
             @Root(name="Address")
             data class Address(
-                @field:Element(name="AddressType"     ) var addressType     : String? = null,
-                @field:Element(name="Address"         ) var address         : String? = null,
-                @field:Element(name="City"            ) var city            : String? = null,
-                @field:Element(name="StateOrProvince" ) var stateOrProvince : String? = null,
-                @field:Element(name="PostCode"        ) var postcode        : String? = null,
-                @field:Element(name="Country"         ) var country         : String? = null
+                @field:Element(name="AddressType", required = false     ) var addressType     : String? = null,
+                @field:Element(name="Address", required = false         ) var address         : String? = null,
+                @field:Element(name="City", required = false            ) var city            : String? = null,
+                @field:Element(name="StateOrProvince", required = false ) var stateOrProvince : String? = null,
+                @field:Element(name="PostCode", required = false        ) var postcode        : String? = null,
+                @field:Element(name="Country", required = false         ) var country         : String? = null
             )
         }
     }
@@ -120,7 +120,7 @@ class WmsCapabilities(
         @Root(name="Layer")
         data class Layer(
                 @field:Element      (name = "Name",                     required=false)                                  var name                  : String?             = null,
-                @field:Element      (name = "Title", required = true)                                                    var title                 : String?             = null,
+                @field:Element      (name = "Title", required = false)                                                    var title                 : String?             = null,
                 @field:Element      (name = "Abstract",                 required=false)                                  var abstract              : String?             = null,
                 @field:ElementList  (name = "KeywordList",              empty = true, entry="Keyword", required = false) var keywords              : List<String>?       = null,
                 @field:ElementList  (entry = "CRS",                     empty = true, inline = true, required = false)   var crss                  : List<String>?       = null,

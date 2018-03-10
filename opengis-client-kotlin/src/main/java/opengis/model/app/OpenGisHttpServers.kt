@@ -16,17 +16,18 @@ fun OpenGisHttpServer.getMapViewLayers(
     ) {
 
     val processor = clientProvider(this)
-    var outcomes : MutableSet<Outcome<Set<MapViewLayer>>> = mutableSetOf()
 
+    /**
+     *  */
     data class MapViewLayerProvision<Capabilities:Any>(val service: OpenGisService<Capabilities>, val extractMapLayers: (Capabilities)->Set<MapViewLayer>) {
         @Suppress("UNCHECKED_CAST")
-        fun extractMapLayers(capabilities: Any) : Set<MapViewLayer> = extractMapLayers(capabilities as Capabilities)
+        //fun extractMapLayers(capabilities: Any) : Set<MapViewLayer> = this.extractMapLayers(capabilities as Capabilities)
 
         fun call(callback: Callback<Set<MapViewLayer>> ) {
             val request = service.createGetCapabilitiesRequest()
             processor.execute(request,service.capabilitiesClass) { outcome:Outcome<*> ->
                 val mapViewLayerOutcome = when(outcome) {
-                    is Outcome.Success<*> -> Outcome.Success(outcome.result?.let { extractMapLayers(it) } ?: emptySet() )
+                    is Outcome.Success<*> -> Outcome.Success(outcome.result?.let { extractMapLayers(it as Capabilities) } ?: emptySet() )
                     is Outcome.Error      -> Outcome.Error<Set<MapViewLayer>>(outcome.error)
                 }
                 callback(mapViewLayerOutcome)

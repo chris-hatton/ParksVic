@@ -16,7 +16,11 @@ import opengis.process.*
 import opengis.model.app.MapViewLayer
 import opengis.model.app.OpenGisHttpServer
 import opengis.model.app.getMapViewLayers
+import org.chrishatton.crosswind.rx.subscribeOnUiThread
 import org.chrishatton.geobrowser.R
+import android.support.v7.widget.LinearLayoutManager
+
+
 
 
 class MapActivity : AppCompatActivity() {
@@ -35,7 +39,7 @@ class MapActivity : AppCompatActivity() {
         object UnexpectedViewType : Exception()
     }
 
-    val layers : BehaviorSubject<List<MapViewLayer>> = BehaviorSubject.create()
+    val layers : BehaviorSubject<List<MapViewLayer>> = BehaviorSubject.createDefault(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,13 +58,19 @@ class MapActivity : AppCompatActivity() {
                 is Outcome.Success ->  outcome.result.toList()
                 is Outcome.Error   -> emptyList()
             }
-            this.layers.onNext(layers)
+            runOnUiThread {
+                this.layers.onNext(layers)
+            }
         }
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+        layer_list.layoutManager = LinearLayoutManager(this).apply {
+                orientation = LinearLayoutManager.VERTICAL
+            }
 
         layer_list.adapter = object : RecyclerView.Adapter<ViewHolder<*>>() {
 
@@ -84,6 +94,12 @@ class MapActivity : AppCompatActivity() {
                 else -> throw Exception.UnexpectedViewType
             }
         }
+
+        layers
+            .subscribeOnUiThread()
+            .subscribe { _ ->
+                layer_list.adapter.notifyDataSetChanged()
+            }
 
         //nav_view.setNavigationItemSelectedListener(this)
     }

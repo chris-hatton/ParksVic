@@ -4,7 +4,6 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.chrishatton.crosswind.environment
 
-
 fun <T> Observable<T>.observeOnUiThread() : Observable<T> {
     return this.observeOn( environment!!.uiScheduler )
 }

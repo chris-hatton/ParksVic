@@ -7,7 +7,7 @@ import org.simpleframework.xml.Element
  * requests.
  */
 open class CapabilitiesBaseType(
-        @field:Element(name="ServiceIdentification") var serviceIdentification : ServiceIdentification? = null,
-        @field:Element(name="ServiceProvider"      ) var serviceProvider       : ServiceProvider?       = null,
-        @field:Element(name="OperationsMetadata"   ) var operationsMetadata    : OperationsMetadata?    = null
+        @field:Element(name="ServiceIdentification", required = false) var serviceIdentification : ServiceIdentification? = null,
+        @field:Element(name="ServiceProvider", required = false      ) var serviceProvider       : ServiceProvider?       = null,
+        @field:Element(name="OperationsMetadata", required = false ) var operationsMetadata    : OperationsMetadata?    = null
 )

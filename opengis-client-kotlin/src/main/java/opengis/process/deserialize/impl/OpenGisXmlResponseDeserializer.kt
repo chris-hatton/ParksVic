@@ -2,6 +2,8 @@ package opengis.process.deserialize.impl
 
 import opengis.model.app.request.OpenGisRequest
 import opengis.model.transport.xml.wfs.WfsCapabilities
+import opengis.model.transport.xml.wms.WmsCapabilities
+import opengis.model.transport.xml.wmts.WmtsCapabilities
 import opengis.process.deserialize.OpenGisResponseDeserializer
 import org.simpleframework.xml.core.Persister
 import org.xmlpull.v1.XmlPullParserFactory
@@ -26,6 +28,8 @@ class OpenGisXmlResponseDeserializer(val pullParserFactory: XmlPullParserFactory
         @Suppress("UNCHECKED_CAST")
         return when( resultClass ) {
             WfsCapabilities::class -> serializer.read(WfsCapabilities::class.java, bytes) as Result
+            WmsCapabilities::class -> serializer.read(WmsCapabilities::class.java, bytes) as Result
+            WmtsCapabilities::class -> serializer.read(WmtsCapabilities::class.java, bytes) as Result
             else -> throw OpenGisResponseDeserializer.Exception.UnhandledType
         }
     }
