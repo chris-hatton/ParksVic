@@ -1,10 +1,10 @@
 package org.chrishatton.geobrowser.ui.view
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
@@ -12,26 +12,58 @@ import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
-import opengis.process.*
+import kotlinx.android.synthetic.main.map_layer_feature.view.*
 import opengis.model.app.MapViewLayer
 import opengis.model.app.OpenGisHttpServer
 import opengis.model.app.getMapViewLayers
+import opengis.process.AndroidOpenGisClient
+import opengis.process.Outcome
+import opengis.process.ServerListLoader
+import opengis.process.load
 import org.chrishatton.crosswind.rx.subscribeOnUiThread
 import org.chrishatton.geobrowser.R
-import android.support.v7.widget.LinearLayoutManager
-
-
+import org.chrishatton.geobrowser.ui.model.LayerUiState
+import java.util.*
+import kotlin.properties.Delegates
 
 
 class MapActivity : AppCompatActivity() {
 
-    sealed class ViewHolder<T: MapViewLayer>(activity: Activity, layoutId: Int, viewGroup: ViewGroup?)
-        : RecyclerView.ViewHolder(activity.layoutInflater.inflate(layoutId,viewGroup)) {
+    sealed class ViewHolder<T: MapViewLayer>(activity: MapActivity, layoutId: Int, viewGroup: ViewGroup?)
+        : RecyclerView.ViewHolder(activity.layoutInflater.inflate(layoutId,viewGroup,false)) {
 
-        var layer: T? = null
+        var layer: T? by Delegates.observable(null as T?) { _,_,newLayer ->
+            val layerToState : Pair<T,LayerUiState>? = newLayer?.let {
+                newLayer to activity.getLayerUiState(newLayer)
+            }
+            this.didSetLayer(layerToState)
+        }
 
-        class Feature(activity:Activity, viewGroup:ViewGroup?) : ViewHolder<MapViewLayer.Feature> (activity,R.layout.map_layer_feature,viewGroup)
-        class Tile   (activity:Activity, viewGroup:ViewGroup?) : ViewHolder<MapViewLayer.Tile>    (activity,R.layout.map_layer_tile,   viewGroup)
+        abstract fun didSetLayer(layerToState: Pair<T,LayerUiState>? )
+
+        class Feature(activity:MapActivity, viewGroup:ViewGroup?) : ViewHolder<MapViewLayer.Feature> (activity,R.layout.map_layer_feature,viewGroup) {
+            override fun didSetLayer(layerToState:Pair<MapViewLayer.Feature,LayerUiState>?) {
+                itemView.checkedTextView.apply {
+                    text      = layerToState?.let { it.first.featureType.name } ?: "Unnamed features"
+                    isChecked = layerToState?.let { it.second.isSelected      } ?: false
+                }
+            }
+        }
+
+        class Tile(activity:MapActivity, viewGroup:ViewGroup?) : ViewHolder<MapViewLayer.Tile> (activity,R.layout.map_layer_tile,viewGroup) {
+
+            override fun didSetLayer(layerToState:Pair<MapViewLayer.Tile,LayerUiState>?) {
+                itemView.checkedTextView.apply {
+                    val layer = layerToState?.first
+                    text = when(layer) {
+                        is MapViewLayer.Tile.Wmts -> layer.layer.name
+                        is MapViewLayer.Tile.Wms  -> layer.layer.name
+                        else -> "Unnamed features"
+                    }
+                    isChecked = layerToState?.let { it.second.isSelected      } ?: false
+                }
+            }
+        }
     }
 
     sealed class Exception : kotlin.Exception() {
@@ -40,6 +72,11 @@ class MapActivity : AppCompatActivity() {
     }
 
     val layers : BehaviorSubject<List<MapViewLayer>> = BehaviorSubject.createDefault(emptyList())
+    private val layerUiStates : WeakHashMap<MapViewLayer,LayerUiState> = WeakHashMap()
+
+    private fun getLayerUiState(layer: MapViewLayer) : LayerUiState = layerUiStates[layer] ?: LayerUiState(isSelected = false).also {
+        layerUiStates[layer] = it
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +109,8 @@ class MapActivity : AppCompatActivity() {
                 orientation = LinearLayoutManager.VERTICAL
             }
 
+        //layer_list.adapter.sel
+
         layer_list.adapter = object : RecyclerView.Adapter<ViewHolder<*>>() {
 
             override fun getItemViewType(position: Int): Int = when(layers.value[position]) {
@@ -101,7 +140,10 @@ class MapActivity : AppCompatActivity() {
                 layer_list.adapter.notifyDataSetChanged()
             }
 
-        //nav_view.setNavigationItemSelectedListener(this)
+//        nav_view.setNavigationItemSelectedListener { item ->
+//            val currentlySelected = selec
+//            item.isChecked
+//        }
     }
 
     override fun onBackPressed() {

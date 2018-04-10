@@ -6,7 +6,7 @@ repositories {
 
 buildscript {
 
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.30'
     ext.gson_version   = '2.7'
     ext.okhttp_version = '3.8.1'
 
@@ -23,23 +23,23 @@ buildscript {
 }
 
 dependencies {
-    compile project (':crosswind')
-    compile project (':geojson-kotlin')
-    compile project (':kimage')
+    implementation project (':crosswind')
+    implementation project (':geojson-kotlin')
+    implementation project (':kimage')
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // OkHttp
-    compile "com.squareup.okhttp3:okhttp:$okhttp_version"
-    compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     // Gson
-    compile "com.google.code.gson:gson:$gson_version"
+    implementation "com.google.code.gson:gson:$gson_version"
 
     // SimpleXML
-    compile "org.simpleframework:simple-xml:2.7.1"
+    implementation "org.simpleframework:simple-xml:2.7.1"
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 
 task copyTestResources(type: Copy) {

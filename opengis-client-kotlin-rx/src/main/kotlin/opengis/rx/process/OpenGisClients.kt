@@ -36,7 +36,5 @@ fun <Result:Any> OpenGisRequestProcessor.execute(
  * Convenience function allowing the 'expected type' information needed by OpenGisClient, to be
  * inferred by the compiler at point of use.
  */
-inline fun <reified Result:Any> OpenGisRequestProcessor.execute(request: OpenGisRequest<Result> ) : Observable<Result> = this.execute(
-        request    = request,
-        resultType = Result::class
-    )
+inline fun <reified Result:Any> OpenGisRequestProcessor.execute(request: OpenGisRequest<Result> ) : Observable<Result> =
+    this.execute( request = request, resultType = Result::class)

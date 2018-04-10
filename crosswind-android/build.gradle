@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion "27.0.3"
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
@@ -28,18 +28,18 @@ repositories {
 dependencies {
 
     // Android
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:appcompat-v7:$android_support_version"
+    implementation "com.android.support:appcompat-v7:$android_support_version"
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // ReactiveX
-    compile "io.reactivex.rxjava2:rxkotlin:$rx_version"
-    compile "io.reactivex.rxjava2:rxjava:$rx_version"
-    compile "io.reactivex.rxjava2:rxandroid:$rx_android_version"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rx_version"
+    implementation "io.reactivex.rxjava2:rxjava:$rx_version"
+    implementation "io.reactivex.rxjava2:rxandroid:$rx_android_version"
 
-    compile project(':crosswind')
+    implementation project(':crosswind')
 }

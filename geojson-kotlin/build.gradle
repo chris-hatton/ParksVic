@@ -6,7 +6,7 @@ repositories {
 
 buildscript {
 
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.30'
     ext.gson_version   = '2.7'
 
     repositories {
@@ -22,8 +22,8 @@ buildscript {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "com.google.code.gson:gson:$gson_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.google.code.gson:gson:$gson_version"
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
