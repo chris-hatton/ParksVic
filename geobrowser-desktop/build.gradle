@@ -29,7 +29,7 @@ jfx {
     appName = "Parks in Victoria"
     vendor = "Chris Hatton"
 
-    mainClass = "org.chrishatton.geobrowser.ParksVicApplication"
+    mainClass = "org.chrishatton.geobrowser.GeoBrowserApplication"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -39,32 +39,32 @@ jfx {
 
 dependencies {
 
-    compile project('geojson')
-    compile project('parksvic')
-    compile project('crosswind')
-    compile project('crosswind-tornadofx')
-    compile project(':gmapsfx')
-    compile project('geoklient')
+    implementation project('geojson')
+    implementation project('geobrowser')
+    implementation project('crosswind')
+    implementation project('crosswind-tornadofx')
+    implementation project(':gmapsfx')
+    implementation project('geoklient')
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testimplementation group: 'junit', name: 'junit', version: '4.12'
 
     // JavaFX
-    compile 'no.tornado:tornadofx:1.7.4'
+    implementation 'no.tornado:tornadofx:1.7.4'
 
     // Material Design
-    compile 'com.jfoenix:jfoenix:1.2.0'
+    implementation 'com.jfoenix:jfoenix:1.2.0'
 
     // GMapsFX
     // Compiling from source, above, because fixes needed
-    //compile group: 'com.lynden', name: 'GMapsFX', version: '2.12.0'
+    //implementation group: 'com.lynden', name: 'GMapsFX', version: '2.12.0'
 
     // RxKotlinFX (https://github.com/thomasnield/RxKotlinFX)
-    compile 'com.github.thomasnield:rxkotlinfx:2.1.0'
+    implementation 'com.github.thomasnield:rxkotlinfx:2.1.0'
 
     // Rx
-    compile 'io.reactivex.rxjava2:rxjava:2.0.9'
-    compile 'io.reactivex.rxjava2:rxkotlin:2.0.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.9'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.0.0'
 
 }

@@ -3,14 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    signingConfigs {
-        debug {
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-            storeFile file('/Users/Chris/Projects/Personal/Android/ParksVic/geobrowser-android/app/src/debug/debug.keystore')
-            storePassword 'android'
-        }
-    }
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
     defaultConfig {
@@ -28,8 +20,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
         abortOnError false
@@ -55,11 +47,13 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$android_support_version"
     implementation 'com.google.android.gms:play-services-maps:12.0.1'
     implementation 'com.google.maps.android:android-maps-utils:0.5'
+
     def withoutAndroidProvidedXmlModules = {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
+
     // The following sub-project dependencies all transitively reference simple-xml
     // and we must block the even more deeply transitive inclusion of the Xml modules
     // that are already provided by Android.
@@ -70,16 +64,20 @@ dependencies {
     implementation project(':geojson-kotlin')
     implementation project(':crosswind')
     implementation project(':crosswind-android')
+
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     // OkHttp
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
     // Retrofit
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
+
     // ReactiveX
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_version"
     implementation "io.reactivex.rxjava2:rxjava:$rx_version"
