@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
 
+    implementation project(':opengis-client-kotlin-rx')
     implementation project(':opengis-client-kotlin')
     implementation project(':geojson-kotlin')
     implementation project(':crosswind')

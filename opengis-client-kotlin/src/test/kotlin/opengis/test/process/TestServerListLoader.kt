@@ -21,7 +21,7 @@ class TestServerListLoader {
     @Test
     fun testServerListLoader() {
 
-        val serverList : Set<OpenGisHttpServer> = ServerListLoader.load(resourcePath = "/serverList.json")
+        val serverList : Iterable<OpenGisHttpServer> = ServerListLoader.load(resourcePath = "/serverList.json")
 
         Assert.assertEquals( 2, serverList.count() )
 

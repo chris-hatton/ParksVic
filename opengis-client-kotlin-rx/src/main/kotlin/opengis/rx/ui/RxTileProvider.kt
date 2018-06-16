@@ -15,7 +15,7 @@ interface TileProvider<T:Tile> {
     val tilesConsumer : Consumer<T>
 }
 
-fun <T:Tile> opengis.ui.TileProvider.toRx() = object : TileProvider<T> {
+fun <T:Tile> opengis.process.TileProvider.toRx() = object : TileProvider<T> {
 
     private val tileImages = PublishSubject.create<Image<RGB>>()
 

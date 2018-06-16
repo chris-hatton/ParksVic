@@ -1,4 +1,4 @@
-package opengis.ui
+package opengis.process
 
 import geojson.Feature
 import opengis.process.Callback

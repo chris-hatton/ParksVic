@@ -19,21 +19,21 @@ abstract class PresentedActivity<T,P> : Activity()
         @Suppress("UNCHECKED_CAST")
         val view = this as T
         presenter = createPresenter( view )
-        presenter.onCreate()
+        presenter.create()
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.onResume()
+        presenter.resume()
     }
 
     override fun onPause() {
-        presenter.onPause()
+        presenter.pause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        presenter.onDestroy()
+        presenter.destroy()
         super.onDestroy()
     }
 }

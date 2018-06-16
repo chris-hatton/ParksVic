@@ -2,12 +2,11 @@ package opengis.process.tile
 
 import android.graphics.BitmapFactory
 import opengis.model.app.request.OpenGisRequest
-import opengis.process.Callback
 import opengis.process.Outcome
 import opengis.process.projection.Tile as OpenGisTile
 import com.google.android.gms.maps.model.Tile as AndroidTile
 import com.google.android.gms.maps.model.TileProvider as AndroidTileProvider
-import opengis.ui.TileProvider as OpenGisTileProvider
+import opengis.process.TileProvider as OpenGisTileProvider
 
 /**
  * Abstraction of a TileProvider for an Android MapView,

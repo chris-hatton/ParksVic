@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.chrishatton.geobrowser.ui.view.MapActivity">
+    tools:context="org.chrishatton.geobrowser.ui.view.LayersView">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -33,6 +33,5 @@
         android:layout_height="match_parent"
         android:apiKey="@string/google_maps_key"
         android:background="@color/colorPrimary"/>
-
 
 </android.support.design.widget.CoordinatorLayout>

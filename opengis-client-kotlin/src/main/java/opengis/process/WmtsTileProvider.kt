@@ -1,11 +1,9 @@
-package opengis.ui
+package opengis.process
 
 import opengis.model.app.request.wmts.Layer
 import opengis.model.app.MimeType
 import opengis.model.app.Style
 import opengis.model.app.request.wmts.GetTile
-import opengis.process.OpenGisHttpClient
-import opengis.process.OpenGisRequestProcessor
 import opengis.process.projection.Tile
 
 class WmtsTileProvider(

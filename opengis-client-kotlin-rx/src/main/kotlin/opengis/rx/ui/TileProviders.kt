@@ -1,11 +1,5 @@
 package opengis.rx.ui
 
-import io.reactivex.Observable
-import io.reactivex.functions.Consumer
-import kimage.model.Image
-import kimage.model.pixel.RGB
-import opengis.ui.TileProvider
-
 
 /**
  * Created by Chris on 20/01/2018.

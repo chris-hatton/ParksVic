@@ -1,9 +1,6 @@
-package opengis.ui
+package opengis.process
 
 import opengis.model.app.request.OpenGisRequest
-import opengis.process.Callback
-import opengis.process.OpenGisRequestProcessor
-import opengis.process.execute
 import opengis.process.projection.Tile
 
 

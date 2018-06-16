@@ -1,11 +1,10 @@
-package opengis.ui
+package opengis.process
 
 import geojson.BoundingBox
 import opengis.model.app.CRS
 import opengis.model.app.request.wms.Layer
 import opengis.model.app.Style
 import opengis.model.app.request.wms.GetMap
-import opengis.process.OpenGisRequestProcessor
 import opengis.process.projection.Projection
 import opengis.process.projection.Tile
 
@@ -27,7 +26,7 @@ class WmsTileProvider(
             styledLayers     : List<GetMap.StyledLayer>
     ) : this(
             requestProcessor = requestProcessor,
-            baseRequest = WmsTileProvider.buildBaseTileRequest(styledLayers)
+            baseRequest = buildBaseTileRequest(styledLayers)
     )
 
     companion object {
