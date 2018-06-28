@@ -1,6 +1,7 @@
 apply plugin: 'kotlin'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -10,6 +11,7 @@ buildscript {
     ext.gson_version   = '2.7'
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
         //google()

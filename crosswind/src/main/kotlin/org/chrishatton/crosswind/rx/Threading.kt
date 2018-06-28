@@ -2,40 +2,38 @@ package org.chrishatton.crosswind.rx
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import org.chrishatton.crosswind.environment
+import org.chrishatton.crosswind.Crosswind
 
 fun <T> Observable<T>.observeOnUiThread() : Observable<T> {
-    return this.observeOn( environment!!.uiScheduler )
+    return this.observeOn( Crosswind.environment.uiScheduler )
 }
 
 fun <T> Observable<T>.subscribeOnUiThread() : Observable<T> {
-    return this.subscribeOn( environment!!.uiScheduler )
+    return this.subscribeOn( Crosswind.environment.uiScheduler )
 }
 
 fun <T> Observable<T>.observeOnLogicThread() : Observable<T> {
-    return this.observeOn( environment!!.logicScheduler )
+    return this.observeOn( Crosswind.environment.logicScheduler )
 }
 
 fun <T> Observable<T>.subscribeOnLogicThread() : Observable<T> {
-    return this.subscribeOn( environment!!.logicScheduler )
+    return this.subscribeOn( Crosswind.environment.logicScheduler )
 }
 
 fun <T> Observable<T>.subscribeOnNetworkThread() : Observable<T> {
     return this.subscribeOn( Schedulers.io() )
 }
 
-fun assertMainThread() {
-    environment!!.isOnUiThread()
-}
+fun assertMainThread() = Crosswind.environment.isOnUiThread()
 
 fun assertNotMainThread() {
-    !environment!!.isOnUiThread()
+    !Crosswind.environment.isOnUiThread()
 }
 
 fun doOnMainThread( task: ()->Unit ) {
-    environment!!.uiScheduler.scheduleDirect(task)
+    Crosswind.environment.uiScheduler.scheduleDirect(task)
 }
 
 fun doOnLogicThread( task: ()->Unit ) {
-    environment!!.logicScheduler.scheduleDirect(task)
+    Crosswind.environment.logicScheduler.scheduleDirect(task)
 }

@@ -1,5 +1,5 @@
 package org.chrishatton.crosswind.util
 
-import org.chrishatton.crosswind.environment
+import org.chrishatton.crosswind.Crosswind
 
-fun log( message: String ) = environment?.logger?.invoke(message)
+fun log( message: String ) = Crosswind.environment.logger.invoke(message)

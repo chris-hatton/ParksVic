@@ -15,7 +15,8 @@ import kotlin.properties.Delegates
 /**
  * Created by Chris on 19/01/2018.
  */
-class MapPresenter(view: MapViewContract) : Presenter<MapViewContract>() {
+class MapPresenter(view: MapViewContract) : Presenter<MapViewContract>(view) {
+
     private val wmtsLayerTileProviders : MutableMap<MapViewLayer.Tile.Wmts, WmtsTileProvider> = mutableMapOf()
     private val wmsLayerTileProviders  : MutableMap<OpenGisRequestProcessor, WmsTileProvider> = mutableMapOf()
     private val featuresByType         : MutableMap<MapViewLayer.Feature,   Set<Feature>    > = mutableMapOf()
@@ -70,10 +71,10 @@ class MapPresenter(view: MapViewContract) : Presenter<MapViewContract>() {
 
         (newWmsLayersByProcessor.keys - oldWmsLayersByProcessor.keys) // Processors to add
                 .associateTo(wmsLayerTileProviders) { processor ->
-                    val layers = newWmsLayersByProcessor[processor]!!
-                    val styledLayers : List<GetMap.StyledLayer> = layers.map { GetMap.StyledLayer(it.layer) }
+                    val layerPresentersConsumer = newWmsLayersByProcessor[processor]!!
+                    val styledLayers : List<GetMap.StyledLayer> = layerPresentersConsumer.map { GetMap.StyledLayer(it.layer) }
                     val tileProvider = WmsTileProvider(processor,styledLayers)
-                    processor to (layers to tileProvider)
+                    processor to (layerPresentersConsumer to tileProvider)
                 }
                 */
 

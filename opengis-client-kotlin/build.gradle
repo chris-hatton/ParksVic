@@ -1,6 +1,7 @@
 apply plugin: 'kotlin'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -11,6 +12,7 @@ buildscript {
     ext.okhttp_version = '3.8.1'
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
         //google()

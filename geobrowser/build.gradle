@@ -4,6 +4,8 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 repositories {
+    mavenLocal()
+    google()
     mavenCentral()
 }
 
@@ -13,6 +15,8 @@ dependencies {
     implementation project(':opengis-client-kotlin')
     implementation project(':geojson-kotlin')
     implementation project(':crosswind')
+
+    implementation 'com.google.guava:guava:25.1-android'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

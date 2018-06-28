@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -40,6 +41,7 @@ buildscript {
     ext.okhttp_version = '3.8.1'
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }

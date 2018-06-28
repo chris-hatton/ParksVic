@@ -11,14 +11,13 @@ abstract class PresentedActivity<T,P> : Activity()
     lateinit var presenter : P
         protected set
 
-    protected abstract fun createPresenter( view: T ) : P
+    protected abstract fun createPresenter() : P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         @Suppress("UNCHECKED_CAST")
-        val view = this as T
-        presenter = createPresenter( view )
+        presenter = createPresenter()
         presenter.create()
     }
 

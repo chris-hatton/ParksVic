@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     tools:context=".ui.view.LayersView">
 
-    <CheckedTextView
+    <CheckBox
         android:id="@+id/checkedFeatureTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

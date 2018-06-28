@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.jakewharton.rxbinding2.support.v7.widget.RecyclerViewChildAttachEvent
@@ -17,39 +18,59 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_map.*
 import kotlinx.android.synthetic.main.app_bar_map.*
 import kotlinx.android.synthetic.main.map_layer_feature.view.*
+import opengis.model.app.MapViewLayer
 import opengis.process.AndroidOpenGisClient
 import opengis.process.ServerListLoader
 import opengis.process.load
 import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.geobrowser.R
+import org.chrishatton.geobrowser.rx.RxRecyclerAdapter
+import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 import org.chrishatton.geobrowser.ui.contract.LayersViewContract
 import org.chrishatton.geobrowser.ui.presenter.LayerPresenter
 import org.chrishatton.geobrowser.ui.presenter.LayersPresenter
 
 class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), LayersViewContract {
 
-    override var layers: Consumer<Iterable<LayerPresenter>> = Consumer { layers ->
-
+    private val layerPresentersSubject = PublishSubject.create<Iterable<LayerPresenter>>()
+    override var layerPresentersConsumer: Consumer<Iterable<LayerPresenter>> = Consumer { layers ->
+        layerPresentersSubject.onNext(layers)
     }
 
-    override fun createPresenter(view: LayersViewContract): LayersPresenter {
+    private val mapViewLayersStream : Observable<Iterable<MapViewLayer>> = layerPresentersSubject.map { layerPresenters ->
+        layerPresenters.map { layerPresenter -> layerPresenter.layer }
+    }
+
+    private val layerListAdapter = RxRecyclerAdapter<LayerView<MapViewLayer>,MapViewLayer>(
+            itemsStream = mapViewLayersStream,
+            createViewHolder = { viewGroup,type ->
+                when(type) {
+                    0 -> LayerView.Tile   (this@LayersView,viewGroup)
+                    1 -> LayerView.Feature(this@LayersView,viewGroup)
+                    else -> throw Exception()
+                }
+            }
+    )
+
+    override var layerViewBindings: Observable<Map<MapViewLayer, LayerViewContract>> =
+            layerListAdapter.layerViewBindingStream
+                    .scan(emptyMap()) {  map,layerToView -> mapOf(layerToView) + map }
+
+    override fun createPresenter(): LayersPresenter {
 
         val servers = ServerListLoader.load( context = this, resource = R.raw.server_list )
 
         return LayersPresenter(
+            view           = this,
             clientProvider = ::AndroidOpenGisClient,
             serversStream  = Observable.just(servers)
-        ).apply {
-            this.view = view
-        }
-    }
-
-    sealed class Exception : kotlin.Exception() {
-        object UnsupportedType : Exception()
-        object UnexpectedViewType : Exception()
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,8 +94,7 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
                 orientation = LinearLayoutManager.VERTICAL
             }
 
-
-        //layer_list.adapter = RxRecyclerAdapter<LayerViewHolder<MapViewLayer>,MapViewLayer>()
+        layer_list.adapter = layerListAdapter
 
         layer_list.childAttachStateChangeEvents()
             .observeOn(Schedulers.computation())
@@ -134,8 +154,4 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
-    //drawer_layout.closeDrawer(GravityCompat.START)
-
-
 }

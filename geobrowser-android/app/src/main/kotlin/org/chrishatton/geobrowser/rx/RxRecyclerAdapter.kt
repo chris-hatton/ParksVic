@@ -8,12 +8,18 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
+import opengis.model.app.MapViewLayer
+import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 import kotlin.properties.Delegates
 
 class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         private val itemsStream: Observable<Iterable<T>>,
-        private val createViewHolder : (ViewGroup?, Int)-> VH
+        private val createViewHolder : (ViewGroup?, Int)-> RxRecyclerAdapter.ViewHolder<out T>
 ) : RecyclerView.Adapter<VH>() {
+
+    private val layerViewBindingSubject : Subject<Pair<T, VH>> = BehaviorSubject.create()
+    var layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingSubject.hide()
 
     private val disposable = CompositeDisposable()
     private var items : Iterable<T> by Delegates.observable(emptyList()) { _,_,_ ->
@@ -25,7 +31,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         itemsStream
             .subscribeBy(
                 onNext  = { items = it },
-                onError = { items = emptyList() }
+                onError = {  }
             )
             .addTo(disposable)
     }
@@ -45,11 +51,14 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
-            = createViewHolder(parent,viewType)
+            = createViewHolder.invoke(parent,viewType) as VH
 
     override fun getItemCount(): Int = items.count()
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        holder.item = items.elementAt(position)
+        val item : T = items.elementAt(position)
+        holder.item = item
+        val binding = item to holder
+        layerViewBindingSubject.onNext(binding)
     }
 }
