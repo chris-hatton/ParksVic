@@ -7,14 +7,14 @@ import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 
-class LayerPresenter(val layer: MapViewLayer, val viewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(viewStream) {
+class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(viewStream) {
 
     lateinit var isVisible : Observable<Boolean>
 
     override fun onCreate(subscriptions: CompositeDisposable) {
         super.onCreate(subscriptions)
 
-        isVisible = viewStream.switchMap { (view) ->
+        isVisible = attachedViewStream.switchMap { (view) ->
             view?.isSelectedStream ?: Observable.never<Boolean>()
         }
         .startWith(false)
@@ -32,15 +32,5 @@ class LayerPresenter(val layer: MapViewLayer, val viewStream: Observable<Nullabl
         } ?: ""
 
         view.title.accept(title)
-    }
-
-    override fun onViewDetached(view: LayerViewContract) {
-        super.onViewDetached(view)
-
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

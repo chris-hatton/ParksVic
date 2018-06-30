@@ -19,7 +19,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
 ) : RecyclerView.Adapter<VH>() {
 
     private val layerViewBindingSubject : Subject<Pair<T, VH>> = BehaviorSubject.create()
-    var layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingSubject.hide()
+    val layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingSubject.hide()
 
     private val disposable = CompositeDisposable()
     private var items : Iterable<T> by Delegates.observable(emptyList()) { _,_,_ ->

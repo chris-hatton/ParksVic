@@ -11,7 +11,7 @@ import org.chrishatton.crosswind.rx.subscribeOnLogicThread
 import org.chrishatton.crosswind.ui.contract.ViewContract
 import org.chrishatton.crosswind.util.Nullable
 
-abstract class Presenter<T: ViewContract>(private val attachedViewStream : Observable<Nullable<T>>) {
+abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Observable<Nullable<T>>) {
 
     constructor( view: T ) : this( Observable.just(Nullable(view)) )
 
@@ -50,6 +50,7 @@ abstract class Presenter<T: ViewContract>(private val attachedViewStream : Obser
 
         val safeAttachedViewStream =
                 attachedViewStream
+                        .doOnNext { Crosswind.environment.logger("Yo!!!: $this <- $it") }
                         .startWith( Nullable() )
                         .onErrorReturnItem( Nullable() )
                         .share()
@@ -61,6 +62,7 @@ abstract class Presenter<T: ViewContract>(private val attachedViewStream : Obser
 
         attachedViewChangesStream
             .subscribeOnLogicThread()
+            .doOnNext { Crosswind.environment.logger("View bound: $this <- $it") }
             .observeOnLogicThread()
             .subscribe { attachedViewChange ->
                 attachedViewChange.oldView?.let { onViewDetached(it) }

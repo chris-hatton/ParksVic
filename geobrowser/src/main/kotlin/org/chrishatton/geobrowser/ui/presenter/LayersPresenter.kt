@@ -16,7 +16,6 @@ import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 import org.chrishatton.geobrowser.ui.contract.LayersViewContract
-import java.util.concurrent.Callable
 
 /**
  * Created by Chris on 19/01/2018.
@@ -30,6 +29,10 @@ class LayersPresenter(
     private val layerPresenterCache : Cache<MapViewLayer, LayerPresenter> = CacheBuilder
             .newBuilder()
             .weakValues()
+            .removalListener<MapViewLayer, LayerPresenter> { notification ->
+                val presenter = notification.value
+                presenter.destroy()
+            }
             .initialCapacity(32)
             .build()
 
@@ -46,19 +49,21 @@ class LayersPresenter(
                 return@flatMap Observable.merge(layersStreams)
             }
 
-
-        val layerPresentersStream = loadedMapViewLayers.map { mapViewLayers ->
-                mapViewLayers.map { mapViewLayer ->
-                    val viewStream : Observable<Nullable<LayerViewContract>> = view.layerViewBindings.map { layersToViews ->
-                        Nullable(layersToViews[mapViewLayer])
-                    }
-                    layerPresenterCache.get(mapViewLayer) { LayerPresenter(mapViewLayer,viewStream) }
-                }
-            }.scan(emptySet<LayerPresenter>()) { a,b -> a + b }
-            .map { it as Iterable<LayerPresenter> }
-
-        layerPresentersStream
+        loadedMapViewLayers
             .subscribeOnLogicThread()
+            .map { mapViewLayers ->
+                mapViewLayers.map { mapViewLayer ->
+                    layerPresenterCache.get(mapViewLayer) {
+                        val viewStream = view.layerViewBindingsStream.map { layersToViews ->
+                            val layerView = layersToViews[mapViewLayer]
+                            Nullable(layerView)
+                        }
+                        LayerPresenter(mapViewLayer,viewStream).also { it.create() }
+                    }
+                }
+            }
+            .scan(emptySet<LayerPresenter>()) { a,b -> a + b }
+            //.map { it as Iterable<LayerPresenter> }
             .doOnNext { Crosswind.environment.logger("There are ${it.count()} layers.") }
             .observeOnUiThread()
             .subscribe(view.layerPresentersConsumer)

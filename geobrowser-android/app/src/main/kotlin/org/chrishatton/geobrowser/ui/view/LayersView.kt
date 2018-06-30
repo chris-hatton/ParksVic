@@ -28,6 +28,7 @@ import opengis.model.app.MapViewLayer
 import opengis.process.AndroidOpenGisClient
 import opengis.process.ServerListLoader
 import opengis.process.load
+import org.chrishatton.crosswind.Crosswind
 import org.chrishatton.crosswind.ui.view.PresentedActivity
 import org.chrishatton.geobrowser.R
 import org.chrishatton.geobrowser.rx.RxRecyclerAdapter
@@ -58,9 +59,11 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
             }
     )
 
-    override var layerViewBindings: Observable<Map<MapViewLayer, LayerViewContract>> =
+    override var layerViewBindingsStream: Observable<Map<MapViewLayer, LayerViewContract>> =
             layerListAdapter.layerViewBindingStream
-                    .scan(emptyMap()) {  map,layerToView -> mapOf(layerToView) + map }
+                    .doOnNext { Crosswind.environment.logger("$it") }
+                    .scan(emptyMap<MapViewLayer, LayerViewContract>()) {  map,layerToView -> mapOf(layerToView) + map }
+                    .share()
 
     override fun createPresenter(): LayersPresenter {
 
@@ -96,24 +99,24 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
 
         layer_list.adapter = layerListAdapter
 
-        layer_list.childAttachStateChangeEvents()
-            .observeOn(Schedulers.computation())
-            .scan(mutableSetOf<View>()) { views,event ->
-                views.apply {
-                    when(event) {
-                        is RecyclerViewChildAttachEvent -> ::add
-                        is RecyclerViewChildDetachEvent -> ::remove
-                        else -> throw kotlin.Exception()
-                    }(event.view())
-                }
-            }
-            .map { views ->
-                views.map { view ->
-                    view.checkedFeatureTextView
-                        .clicks()
-                        .map { view }
-                }
-            }
+//        layer_list.childAttachStateChangeEvents()
+//            .observeOn(Schedulers.computation())
+//            .scan(mutableSetOf<View>()) { views,event ->
+//                views.apply {
+//                    when(event) {
+//                        is RecyclerViewChildAttachEvent -> ::add
+//                        is RecyclerViewChildDetachEvent -> ::remove
+//                        else -> throw kotlin.Exception()
+//                    }(event.view())
+//                }
+//            }
+//            .map { views ->
+//                views.map { view ->
+//                    view.checkedFeatureTextView
+//                        .clicks()
+//                        .map { view }
+//                }
+//            }
     }
 
     override fun onPause() {
