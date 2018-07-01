@@ -9,7 +9,7 @@ import org.chrishatton.geobrowser.ui.presenter.LayerPresenter
 /**
  * Created by Chris on 19/01/2018.
  */
-interface LayersViewContract : ViewContract {
+interface LayerListViewContract : ViewContract {
 
     var layerPresentersConsumer : Consumer<Iterable<LayerPresenter>>
 

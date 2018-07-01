@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.chrishatton.geobrowser.ui.view.LayersView">
+    tools:context="org.chrishatton.geobrowser.ui.view.LayerListView">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"

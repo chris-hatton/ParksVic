@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="org.chrishatton.geobrowser.ui.view.LayersView"
+    tools:context="org.chrishatton.geobrowser.ui.view.LayerListView"
     tools:openDrawer="start">
 
     <include

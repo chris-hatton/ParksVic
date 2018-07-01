@@ -35,7 +35,7 @@
         <uses-library android:name="com.google.android.maps"/>
 
         <activity
-            android:name=".ui.view.LayersView"
+            android:name=".ui.view.BrowserView"
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
