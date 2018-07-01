@@ -20,6 +20,10 @@ fun <T> Observable<T>.subscribeOnLogicThread() : Observable<T> {
     return this.subscribeOn( Crosswind.environment.logicScheduler )
 }
 
+fun <T> Observable<T>.observeOnNetworkThread() : Observable<T> {
+    return this.observeOn( Schedulers.io() )
+}
+
 fun <T> Observable<T>.subscribeOnNetworkThread() : Observable<T> {
     return this.subscribeOn( Schedulers.io() )
 }

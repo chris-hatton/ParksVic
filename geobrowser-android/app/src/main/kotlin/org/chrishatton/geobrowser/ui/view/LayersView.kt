@@ -52,8 +52,8 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
             itemsStream = mapViewLayersStream,
             createViewHolder = { viewGroup,type ->
                 when(type) {
-                    0 -> LayerView.Tile   (this@LayersView,viewGroup)
-                    1 -> LayerView.Feature(this@LayersView,viewGroup)
+                    0 -> LayerView.Tile   (this@LayersView.layoutInflater,viewGroup)
+                    1 -> LayerView.Feature(this@LayersView.layoutInflater,viewGroup)
                     else -> throw Exception()
                 }
             }
@@ -61,7 +61,7 @@ class LayersView : PresentedActivity<LayersViewContract,LayersPresenter>(), Laye
 
     override var layerViewBindingsStream: Observable<Map<MapViewLayer, LayerViewContract>> =
             layerListAdapter.layerViewBindingStream
-                    .doOnNext { Crosswind.environment.logger("$it") }
+                    //.doOnNext { Crosswind.environment.logger("$it") }
                     .scan(emptyMap<MapViewLayer, LayerViewContract>()) {  map,layerToView -> mapOf(layerToView) + map }
                     .share()
 

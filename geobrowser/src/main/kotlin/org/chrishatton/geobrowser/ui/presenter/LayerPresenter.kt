@@ -3,6 +3,7 @@ package org.chrishatton.geobrowser.ui.presenter
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import opengis.model.app.MapViewLayer
+import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
@@ -14,11 +15,14 @@ class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<La
     override fun onCreate(subscriptions: CompositeDisposable) {
         super.onCreate(subscriptions)
 
-        isVisible = attachedViewStream.switchMap { (view) ->
-            view?.isSelectedStream ?: Observable.never<Boolean>()
-        }
-        .startWith(false)
-        .replay(1)
+        isVisible = attachedViewStream
+            .subscribeOnLogicThread()
+            .observeOnLogicThread()
+            .switchMap { (view) ->
+                view?.isSelectedStream ?: Observable.never<Boolean>()
+            }
+            .startWith(false)
+            .replay(1)
     }
 
     override fun onViewAttached(view: LayerViewContract, viewSubscriptions: CompositeDisposable) {
@@ -31,6 +35,13 @@ class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<La
             else                      -> null
         } ?: ""
 
-        view.title.accept(title)
+        doOnMainThread {
+            view.title.accept(title)
+            view.info.accept("Hi")
+        }
+
+        isVisible
+            .observeOnUiThread()
+            .subscribe(view.isSelectedConsumer)
     }
 }

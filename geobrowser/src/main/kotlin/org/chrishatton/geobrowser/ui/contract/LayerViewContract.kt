@@ -6,5 +6,7 @@ import org.chrishatton.crosswind.ui.contract.ViewContract
 
 interface LayerViewContract : ViewContract {
     val title : Consumer<in CharSequence>
+    val info : Consumer<in CharSequence>
     val isSelectedStream : Observable<Boolean>
+    val isSelectedConsumer: Consumer<in Boolean>
 }

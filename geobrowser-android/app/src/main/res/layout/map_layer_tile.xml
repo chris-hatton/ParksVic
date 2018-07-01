@@ -20,7 +20,7 @@
         tools:text="Victorian Land Parcels"/>
 
     <TextView
-        android:id="@+id/infoTextView"
+        android:id="@+id/tileInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

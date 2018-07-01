@@ -50,15 +50,14 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
 
         val safeAttachedViewStream =
                 attachedViewStream
-                        .doOnNext { Crosswind.environment.logger("Yo!!!: $this <- $it") }
                         .startWith( Nullable() )
-                        .onErrorReturnItem( Nullable() )
+                        //.onErrorReturnItem( Nullable() )
                         .share()
 
         val attachedViewChangesStream : Observable<ViewChange> =
                 Observables.zip( safeAttachedViewStream, safeAttachedViewStream.skip(1) )
                         .map { ViewChange(it.first.value,it.second.value) }
-                        .distinctUntilChanged()
+                        //.distinctUntilChanged()
 
         attachedViewChangesStream
             .subscribeOnLogicThread()

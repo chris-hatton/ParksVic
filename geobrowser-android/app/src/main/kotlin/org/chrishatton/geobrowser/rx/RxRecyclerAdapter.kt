@@ -30,8 +30,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         super.onAttachedToRecyclerView(recyclerView)
         itemsStream
             .subscribeBy(
-                onNext  = { items = it },
-                onError = {  }
+                onNext  = { items = it }//,
+                //onError = {  }
             )
             .addTo(disposable)
     }
@@ -42,12 +42,12 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
     }
 
     abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var item : T
-            get() = itemSubject.value
-            set(value) = itemSubject.onNext(value)
-
-        private val itemSubject = BehaviorSubject.create<T>()
-        val itemStream : Observable<T> = itemSubject.hide()
+//        internal var item : T
+//            get() = itemSubject.value
+//            set(value) = itemSubject.onNext(value)
+//
+//        private val itemSubject = BehaviorSubject.create<T>()
+//        val itemStream : Observable<T> = itemSubject.hide()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
@@ -57,7 +57,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item : T = items.elementAt(position)
-        holder.item = item
+        //holder.item = item
         val binding = item to holder
         layerViewBindingSubject.onNext(binding)
     }

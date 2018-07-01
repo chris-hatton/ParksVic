@@ -10,8 +10,7 @@ import opengis.model.app.OpenGisHttpServer
 import opengis.process.OpenGisRequestProcessor
 import opengis.rx.process.getMapViewLayers
 import org.chrishatton.crosswind.Crosswind
-import org.chrishatton.crosswind.rx.observeOnUiThread
-import org.chrishatton.crosswind.rx.subscribeOnLogicThread
+import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
@@ -31,7 +30,9 @@ class LayersPresenter(
             .weakValues()
             .removalListener<MapViewLayer, LayerPresenter> { notification ->
                 val presenter = notification.value
-                presenter.destroy()
+                doOnLogicThread {
+                    presenter.destroy()
+                }
             }
             .initialCapacity(32)
             .build()
@@ -39,18 +40,19 @@ class LayersPresenter(
     override fun onViewAttached(view: LayersViewContract, viewSubscriptions: CompositeDisposable) {
         super.onViewAttached(view, viewSubscriptions)
 
-        val loadedMapViewLayers : Observable<Iterable<MapViewLayer>> =
-            serversStream.flatMap { servers ->
+        serversStream
+            .subscribeOnLogicThread()
+            .observeOnLogicThread()
+            .flatMap { servers ->
                 val layersStreams = servers.map { server ->
                     server.getMapViewLayers(clientProvider)
+                        .subscribeOnNetworkThread()
                         .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
                         .onErrorResumeNext( Observable.never() )
                 }
                 return@flatMap Observable.merge(layersStreams)
             }
-
-        loadedMapViewLayers
-            .subscribeOnLogicThread()
+            .observeOnLogicThread()
             .map { mapViewLayers ->
                 mapViewLayers.map { mapViewLayer ->
                     layerPresenterCache.get(mapViewLayer) {
@@ -63,8 +65,6 @@ class LayersPresenter(
                 }
             }
             .scan(emptySet<LayerPresenter>()) { a,b -> a + b }
-            //.map { it as Iterable<LayerPresenter> }
-            .doOnNext { Crosswind.environment.logger("There are ${it.count()} layers.") }
             .observeOnUiThread()
             .subscribe(view.layerPresentersConsumer)
             .addTo(viewSubscriptions)
