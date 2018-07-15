@@ -34,6 +34,7 @@ dependencies {
     // ReactiveX
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_version"
     implementation "io.reactivex.rxjava2:rxjava:$rx_version"
+    implementation "com.jakewharton.rxrelay2:rxrelay:2.0.0"
 
     // Joda time
     implementation group: 'joda-time', name: 'joda-time', version: '2.9.9'

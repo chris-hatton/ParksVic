@@ -21,8 +21,7 @@ import org.chrishatton.geobrowser.ui.contract.LayerListViewContract
  */
 class LayerListPresenter(
         val view : LayerListViewContract,
-        val clientProvider : (OpenGisHttpServer)->OpenGisRequestProcessor,
-        val serversStream : Observable<Iterable<OpenGisHttpServer>>
+        val mapViewLayersStream : Observable<Iterable<MapViewLayer>>
 ) : Presenter<LayerListViewContract>( view ) {
 
     private val layerPresenterCache : Cache<MapViewLayer, LayerPresenter> = CacheBuilder
@@ -37,20 +36,9 @@ class LayerListPresenter(
             .initialCapacity(32)
             .build()
 
-    private val layerPresentersStream : ConnectableObservable<Iterable<LayerPresenter>> = serversStream
-        .subscribeOnLogicThread()
+    private val layerPresentersStream : ConnectableObservable<Iterable<LayerPresenter>> = mapViewLayersStream
         .observeOnLogicThread()
-        .flatMap { servers ->
-            val layersStreams = servers.map { server ->
-                server.getMapViewLayers(clientProvider)
-                        .subscribeOnNetworkThread()
-                        .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
-                        .onErrorResumeNext( Observable.never() )
-            }
-            return@flatMap Observable.merge(layersStreams)
-        }
-        .observeOnLogicThread()
-        .map { mapViewLayers ->
+        .map { mapViewLayers:Iterable<MapViewLayer> ->
             mapViewLayers.map { mapViewLayer ->
                 layerPresenterCache.get(mapViewLayer) {
                     val viewStream = view.layerViewBindingsStream.map { layersToViews ->

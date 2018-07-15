@@ -32,7 +32,7 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
 
     private val activeSubscriptions    = CompositeDisposable()
     private val presenterSubscriptions = CompositeDisposable()
-    private val viewSubscriptions     = CompositeDisposable()
+    private val viewSubscriptions      = CompositeDisposable()
 
     fun create()  = onCreate( presenterSubscriptions )
     fun pause()   = onPause()

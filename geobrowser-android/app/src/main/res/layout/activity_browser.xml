@@ -23,13 +23,12 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_map">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/layer_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/map_layer_feature">
-
-        </android.support.v7.widget.RecyclerView>
+        <fragment
+            android:id="@+id/layer_list_fragment"
+            android:name="org.chrishatton.geobrowser.ui.view.LayerListView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_layer_list"/>
 
     </android.support.design.widget.NavigationView>
 
