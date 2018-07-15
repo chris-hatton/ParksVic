@@ -7,4 +7,6 @@ import opengis.model.app.MapViewLayer
  * Bridge the 'mapLayers' property of MapPresenter, to an Rx Consumer.
  */
 val MapPresenter.mapLayersConsumer : Consumer<Iterable<MapViewLayer>>
-    get() = Consumer { mapViewLayers -> this.mapLayers = mapViewLayers.toList() }
+    get() = Consumer { mapViewLayers ->
+        this.mapLayers = mapViewLayers.toList()
+    }

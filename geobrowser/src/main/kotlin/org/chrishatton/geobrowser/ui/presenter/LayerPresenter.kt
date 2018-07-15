@@ -10,12 +10,12 @@ import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 
 class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(viewStream) {
 
-    lateinit var isVisible : Observable<Boolean>
+    lateinit var isVisibleStream : Observable<Boolean>
 
     override fun onCreate(subscriptions: CompositeDisposable) {
         super.onCreate(subscriptions)
 
-        isVisible = attachedViewStream
+        isVisibleStream = attachedViewStream
             .subscribeOnLogicThread()
             .observeOnLogicThread()
             .switchMap { (view) ->
@@ -40,7 +40,7 @@ class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<La
             view.info.accept("Hi")
         }
 
-        isVisible
+        isVisibleStream
             .observeOnUiThread()
             .subscribe(view.isSelectedConsumer)
     }

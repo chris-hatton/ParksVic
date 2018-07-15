@@ -2,6 +2,7 @@ package org.chrishatton.geobrowser.ui.presenter
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import opengis.model.app.OpenGisHttpServer
 import opengis.process.OpenGisRequestProcessor
 import opengis.rx.process.getMapViewLayers
@@ -25,24 +26,29 @@ class BrowserPresenter(
         super.onCreate(subscriptions)
 
         serversStream
-                .subscribeOnLogicThread()
-                .observeOnLogicThread()
-                .flatMap { servers ->
-                    val layersStreams = servers.map { server ->
-                        server.getMapViewLayers(clientProvider)
-                                .subscribeOnNetworkThread()
-                                .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
-                                .onErrorResumeNext( Observable.never() )
-                    }
-                    return@flatMap Observable.merge(layersStreams)
+            .subscribeOnLogicThread()
+            .observeOnLogicThread()
+            .flatMap { servers ->
+                val layersStreams = servers.map { server ->
+                    server.getMapViewLayers(clientProvider)
+                            .subscribeOnNetworkThread()
+                            .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
+                            .onErrorResumeNext( Observable.never() )
                 }
-
-        attachedViewStream.subscribe { view ->
-            view.value?.let {
-                view.value?.serverList
-                //view.
+                return@flatMap Observable.merge(layersStreams)
             }
 
-        }
+//        attachedViewStream.subscribe { view ->
+//            view.value?.let {
+//                view.value?.serverList
+//                //view.
+//            }
+//        }
+
+        layerListPresenter.selectedLayers
+            .subscribeOnLogicThread()
+            .observeOnLogicThread()
+            .subscribe(mapPresenter.mapLayersConsumer)
+            .addTo(subscriptions)
     }
 }
