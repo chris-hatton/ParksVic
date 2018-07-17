@@ -3,6 +3,8 @@ package org.chrishatton.geobrowser.rx
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -18,8 +20,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         private val createViewHolder : (ViewGroup?, Int)-> RxRecyclerAdapter.ViewHolder<out T>
 ) : RecyclerView.Adapter<VH>() {
 
-    private val layerViewBindingSubject : Subject<Pair<T, VH>> = BehaviorSubject.create()
-    val layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingSubject.hide()
+    private val layerViewBindingRelay : Relay<Pair<T, VH>> = BehaviorRelay.create()
+    val layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingRelay.hide()
 
     private val disposable = CompositeDisposable()
     private var items : Iterable<T> by Delegates.observable(emptyList()) { _,_,_ ->
@@ -30,8 +32,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         super.onAttachedToRecyclerView(recyclerView)
         itemsStream
             .subscribeBy(
-                onNext  = { items = it }//,
-                //onError = {  }
+                onNext  = { items = it },
+                onError = { println(it) }
             )
             .addTo(disposable)
     }
@@ -41,14 +43,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         super.onDetachedFromRecyclerView(recyclerView)
     }
 
-    abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        internal var item : T
-//            get() = itemSubject.value
-//            set(value) = itemSubject.onNext(value)
-//
-//        private val itemSubject = BehaviorSubject.create<T>()
-//        val itemStream : Observable<T> = itemSubject.hide()
-    }
+    abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH
             = createViewHolder.invoke(parent,viewType) as VH
@@ -59,6 +54,6 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         val item : T = items.elementAt(position)
         //holder.item = item
         val binding = item to holder
-        layerViewBindingSubject.onNext(binding)
+        layerViewBindingRelay.accept(binding)
     }
 }

@@ -2,24 +2,29 @@ package org.chrishatton.geobrowser.ui.presenter
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.observables.ConnectableObservable
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
+import org.chrishatton.crosswind.util.log
 import org.chrishatton.geobrowser.ui.contract.LayerListViewContract
 
 /**
  * Created by Chris on 19/01/2018.
  */
 class LayerListPresenter(
-        val view : LayerListViewContract,
-        val mapViewLayersStream : Observable<Iterable<MapViewLayer>>
+        val view : LayerListViewContract
 ) : Presenter<LayerListViewContract>( view ) {
+
+    private val layerListRelay : Relay<Iterable<MapViewLayer>> = BehaviorRelay.createDefault(emptySet())
+    val layerListConsumer : Consumer<Iterable<MapViewLayer>> = layerListRelay
 
     private val layerPresenterCache : Cache<MapViewLayer, LayerPresenter> = CacheBuilder
             .newBuilder()
@@ -33,8 +38,9 @@ class LayerListPresenter(
             .initialCapacity(32)
             .build()
 
-    private val layerPresentersStream : ConnectableObservable<Iterable<LayerPresenter>> = mapViewLayersStream
-        .observeOnLogicThread()
+    private val layerPresentersStream : ConnectableObservable<Iterable<LayerPresenter>> = layerListRelay
+            .logOnNext { "HO!!!" }
+            .observeOnLogicThread()
         .map { mapViewLayers:Iterable<MapViewLayer> ->
             mapViewLayers.map(this::getOrCreateLayerPresenter)
         }
@@ -52,8 +58,8 @@ class LayerListPresenter(
 
         Observable.combineLatest(visibilityToLayersStream) { visibilityToLayers ->
             (visibilityToLayers as Array<Pair<MapViewLayer,Boolean>>)
-                    .filter { (_,isVisible) -> isVisible }
-                    .map    { (layer,_)     -> layer     }
+                .filter { (_,isVisible) -> isVisible }
+                .map    { (layer,_)     -> layer     }
         }
     }
 
@@ -70,7 +76,12 @@ class LayerListPresenter(
 
         layerPresentersStream
                 .observeOnUiThread()
+                .logOnNext { "${it.count()} layers" }
                 .subscribe(view.layerPresentersConsumer)
+                .addTo(viewSubscriptions)
+
+        layerPresentersStream
+                .connect()
                 .addTo(viewSubscriptions)
     }
 }

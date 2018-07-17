@@ -7,6 +7,7 @@ import opengis.model.app.OpenGisHttpServer
 import opengis.process.OpenGisRequestProcessor
 import opengis.rx.process.getMapViewLayers
 import org.chrishatton.crosswind.Crosswind
+import org.chrishatton.crosswind.rx.logOnNext
 import org.chrishatton.crosswind.rx.observeOnLogicThread
 import org.chrishatton.crosswind.rx.subscribeOnLogicThread
 import org.chrishatton.crosswind.rx.subscribeOnNetworkThread
@@ -16,7 +17,7 @@ import org.chrishatton.geobrowser.ui.contract.BrowserViewContract
 class BrowserPresenter(
         var layerListPresenter : LayerListPresenter,
         var mapPresenter       : MapPresenter,
-        val clientProvider     : (OpenGisHttpServer)-> OpenGisRequestProcessor,
+        val clientProvider     : (OpenGisHttpServer) -> OpenGisRequestProcessor,
         val view               : BrowserViewContract
     ) : Presenter<BrowserViewContract>(view) {
 
@@ -31,19 +32,14 @@ class BrowserPresenter(
             .flatMap { servers ->
                 val layersStreams = servers.map { server ->
                     server.getMapViewLayers(clientProvider)
-                            .subscribeOnNetworkThread()
-                            .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
-                            .onErrorResumeNext( Observable.never() )
+                        .subscribeOnNetworkThread()
+                        .doOnError { e -> Crosswind.environment.logger(e.localizedMessage) }
+                        .onErrorResumeNext( Observable.never() )
                 }
                 return@flatMap Observable.merge(layersStreams)
             }
-
-//        attachedViewStream.subscribe { view ->
-//            view.value?.let {
-//                view.value?.serverList
-//                //view.
-//            }
-//        }
+            .logOnNext { "WUT ${it.size}" }
+            .subscribe(layerListPresenter.layerListConsumer)
 
         layerListPresenter.selectedLayers
             .subscribeOnLogicThread()
