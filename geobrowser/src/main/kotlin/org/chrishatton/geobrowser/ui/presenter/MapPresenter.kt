@@ -7,6 +7,7 @@ import opengis.process.OpenGisRequestProcessor
 import opengis.process.WmsTileProvider
 import opengis.process.WmtsTileProvider
 import opengis.model.app.MapViewLayer
+import org.chrishatton.crosswind.Crosswind
 import org.chrishatton.geobrowser.ui.contract.MapViewContract
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
@@ -26,42 +27,46 @@ class MapPresenter(view: MapViewContract) : Presenter<MapViewContract>(view) {
         val oldWmtsLayers = oldLayers.filterIsInstance<MapViewLayer.Tile.Wmts>()
         val newWmtsLayers = newLayers.filterIsInstance<MapViewLayer.Tile.Wmts>()
 
-        (oldWmtsLayers - newWmtsLayers) // Layers to Remove
-            .mapNotNull(wmtsLayerTileProviders::remove)
-            .forEach { tileProvider -> view.removeTileLayer(tileProvider) }
+        Crosswind.environment.uiScheduler.scheduleDirect {
 
-        (newWmtsLayers - oldWmtsLayers) // Layers to Add
-            .associateTo(wmtsLayerTileProviders) { layer ->
-                val tileProvider = WmtsTileProvider(layer.requestProcessor, layer.layer.name)
-                view.addTileLayer(tileProvider)
-                layer to tileProvider
-            }
+            (oldWmtsLayers - newWmtsLayers) // Layers to Remove
+                    .mapNotNull(wmtsLayerTileProviders::remove)
+                    .forEach { tileProvider -> view.removeTileLayer(tileProvider) }
 
-        val oldWmsLayersByProcessor = oldLayers
-                .filterIsInstance<MapViewLayer.Tile.Wms>()
-                .groupBy { it.requestProcessor }
-
-        val newWmsLayersByProcessor = newLayers
-                .filterIsInstance<MapViewLayer.Tile.Wms>()
-                .groupBy { it.requestProcessor }
-
-        (oldWmsLayersByProcessor.keys + newWmsLayersByProcessor.keys)  // All processors to consider
-                .forEach { processor ->
-                    val oldProcessorLayers = oldWmsLayersByProcessor[processor]
-                    val newProcessorLayers = newWmsLayersByProcessor[processor]
-                    if(oldProcessorLayers != newProcessorLayers) {
-                        wmsLayerTileProviders.remove(processor)?.let(view::removeTileLayer)
-
-                        val newProcessorTileProvider = newProcessorLayers?.let { layers ->
-                            val styledLayers = layers.map { GetMap.StyledLayer(it.layer) }
-                            val tileProvider = WmsTileProvider(processor, styledLayers)
-                            wmsLayerTileProviders[processor] = tileProvider
-                            tileProvider
-                        }
-
-                        newProcessorTileProvider?.let(view::addTileLayer)
+            (newWmtsLayers - oldWmtsLayers) // Layers to Add
+                    .associateTo(wmtsLayerTileProviders) { layer ->
+                        val tileProvider = WmtsTileProvider(layer.requestProcessor, layer.layer.name)
+                        view.addTileLayer(tileProvider)
+                        layer to tileProvider
                     }
-                }
+
+
+            val oldWmsLayersByProcessor = oldLayers
+                    .filterIsInstance<MapViewLayer.Tile.Wms>()
+                    .groupBy { it.requestProcessor }
+
+            val newWmsLayersByProcessor = newLayers
+                    .filterIsInstance<MapViewLayer.Tile.Wms>()
+                    .groupBy { it.requestProcessor }
+
+            (oldWmsLayersByProcessor.keys + newWmsLayersByProcessor.keys)  // All processors to consider
+                    .forEach { processor ->
+                        val oldProcessorLayers = oldWmsLayersByProcessor[processor]
+                        val newProcessorLayers = newWmsLayersByProcessor[processor]
+                        if (oldProcessorLayers != newProcessorLayers) {
+                            wmsLayerTileProviders.remove(processor)?.let(view::removeTileLayer)
+
+                            val newProcessorTileProvider = newProcessorLayers?.let { layers ->
+                                val styledLayers = layers.map { GetMap.StyledLayer(it.layer) }
+                                val tileProvider = WmsTileProvider(processor, styledLayers)
+                                wmsLayerTileProviders[processor] = tileProvider
+                                tileProvider
+                            }
+
+                            newProcessorTileProvider?.let(view::addTileLayer)
+                        }
+                    }
+        }
 
         /*
         (oldWmsLayersByProcessor.keys - newWmsLayersByProcessor.keys) // Processors to remove

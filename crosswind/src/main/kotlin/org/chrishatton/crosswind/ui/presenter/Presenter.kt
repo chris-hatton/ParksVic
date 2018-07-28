@@ -51,13 +51,12 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
         val safeAttachedViewStream =
                 attachedViewStream
                         .startWith( Nullable() )
-                        //.onErrorReturnItem( Nullable() )
                         .share()
 
         val attachedViewChangesStream : Observable<ViewChange> =
                 Observables.zip( safeAttachedViewStream, safeAttachedViewStream.skip(1) )
+                        .filter { it.first.value !== it.second.value }
                         .map { ViewChange(it.first.value,it.second.value) }
-                        //.distinctUntilChanged()
 
         attachedViewChangesStream
             .subscribeOnLogicThread()

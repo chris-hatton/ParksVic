@@ -13,6 +13,7 @@ import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 import com.jakewharton.rxbinding2.widget.*
 import kotlinx.android.synthetic.main.map_layer_feature.view.*
 import kotlinx.android.synthetic.main.map_layer_tile.view.*
+import org.chrishatton.crosswind.rx.logOnNext
 
 sealed class LayerView<T: MapViewLayer>(layoutInflater: LayoutInflater, layoutId: Int, viewGroup: ViewGroup?)
     : RxRecyclerAdapter.ViewHolder<T>(layoutInflater.inflate(layoutId,viewGroup,false)), LayerViewContract {
@@ -21,13 +22,17 @@ sealed class LayerView<T: MapViewLayer>(layoutInflater: LayoutInflater, layoutId
         override val isSelectedConsumer : Consumer<in Boolean>      by lazy { itemView.checkedFeatureTextView.checked() }
         override val title              : Consumer<in CharSequence> by lazy { itemView.checkedFeatureTextView.text() }
         override val info               : Consumer<in CharSequence> by lazy { itemView.featureInfoTextView.text() }
-        override val isSelectedStream   : Observable<Boolean>       by lazy { itemView.checkedFeatureTextView.checkedChanges() }
+        override val isSelectedStream   : Observable<Boolean>       by lazy {
+            itemView.checkedFeatureTextView.checkedChanges()
+        }
     }
 
     class Tile(layoutInflater: LayoutInflater, viewGroup:ViewGroup?) : LayerView<MapViewLayer.Tile> (layoutInflater,R.layout.map_layer_tile,viewGroup) {
         override val isSelectedConsumer : Consumer<in Boolean>      by lazy { itemView.checkedTileTextView.checked() }
         override val title              : Consumer<in CharSequence> by lazy { itemView.checkedTileTextView.text() }
         override val info               : Consumer<in CharSequence> by lazy { itemView.tileInfoTextView.text() }
-        override val isSelectedStream   : Observable<Boolean>       by lazy { itemView.checkedTileTextView.checkedChanges() }
+        override val isSelectedStream   : Observable<Boolean>       by lazy {
+            itemView.checkedTileTextView.checkedChanges()
+        }
     }
 }

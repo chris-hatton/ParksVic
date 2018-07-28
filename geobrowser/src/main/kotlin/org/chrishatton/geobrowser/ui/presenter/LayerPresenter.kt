@@ -2,27 +2,28 @@ package org.chrishatton.geobrowser.ui.presenter
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
 import org.chrishatton.crosswind.util.Nullable
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 
-class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(viewStream) {
+class LayerPresenter(val layer: MapViewLayer, attachedViewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(attachedViewStream) {
 
-    lateinit var isVisibleStream : Observable<Boolean>
+    lateinit var isSelectedStream : Observable<Boolean>
 
     override fun onCreate(subscriptions: CompositeDisposable) {
         super.onCreate(subscriptions)
 
-        isVisibleStream = attachedViewStream
+        isSelectedStream = attachedViewStream
             .subscribeOnLogicThread()
             .observeOnLogicThread()
             .switchMap { (view) ->
-                view?.isSelectedStream ?: Observable.never<Boolean>()
+                view?.isSelectedStream?.subscribeOnUiThread()?.observeOnLogicThread() ?: Observable.never<Boolean>()
             }
             .startWith(false)
-            .replay(1)
+            .share()
     }
 
     override fun onViewAttached(view: LayerViewContract, viewSubscriptions: CompositeDisposable) {
@@ -40,8 +41,12 @@ class LayerPresenter(val layer: MapViewLayer, viewStream: Observable<Nullable<La
             view.info.accept("Hi")
         }
 
-        isVisibleStream
+        isSelectedStream
+            .subscribeOnLogicThread()
             .observeOnUiThread()
+            .logOnNext { "Is selected $it" }
+            .distinctUntilChanged()
             .subscribe(view.isSelectedConsumer)
+            .addTo(viewSubscriptions)
     }
 }

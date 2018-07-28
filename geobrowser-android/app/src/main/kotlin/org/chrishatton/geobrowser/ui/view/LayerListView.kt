@@ -10,6 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_layer_list.*
 import opengis.model.app.MapViewLayer
+import org.chrishatton.crosswind.rx.logOnNext
 import org.chrishatton.crosswind.ui.view.PresentedFragment
 import org.chrishatton.geobrowser.R
 import org.chrishatton.geobrowser.rx.RxRecyclerAdapter
@@ -40,7 +41,7 @@ class LayerListView : PresentedFragment<LayerListViewContract,LayerListPresenter
 
     override var layerViewBindingsStream: Observable<Map<MapViewLayer, LayerViewContract>> =
         layerListAdapter.layerViewBindingStream
-            .scan(emptyMap<MapViewLayer, LayerViewContract>()) {  map,layerToView -> mapOf(layerToView) + map }
+            .scan(emptyMap<MapViewLayer, LayerViewContract>()) {  map,layerToView -> map + mapOf(layerToView) }
             .share()
 
     override fun createPresenter(): LayerListPresenter = LayerListPresenter(view = this)

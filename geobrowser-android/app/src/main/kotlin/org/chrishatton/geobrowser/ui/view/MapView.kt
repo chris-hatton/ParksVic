@@ -50,18 +50,20 @@ class MapView : PresentedFragment<MapViewContract, MapPresenter>(), MapViewContr
     }
 
     override fun addTileLayer(provider: TileProvider<*>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun removeTileLayer(provider: TileProvider<*>): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 
     override fun addFeature(feature: Feature) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun removeFeature(feature: Feature): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 }
