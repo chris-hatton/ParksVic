@@ -45,7 +45,7 @@ class BrowserPresenter(
         layerListPresenter.selectedLayers
             .subscribeOnLogicThread()
             .observeOnLogicThread()
-            //.logOnNext { "Selected layers: $it" }
+            .logOnNext { "Selected layers: $it" }
             .subscribe(mapPresenter.mapLayersConsumer, Consumer { e -> log(e.toString()) } )
             .addTo(subscriptions)
     }

@@ -60,7 +60,6 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
 
         attachedViewChangesStream
             .subscribeOnLogicThread()
-            .doOnNext { Crosswind.environment.logger("View bound: $this <- $it") }
             .observeOnLogicThread()
             .subscribe { attachedViewChange ->
                 attachedViewChange.oldView?.let { onViewDetached(it) }

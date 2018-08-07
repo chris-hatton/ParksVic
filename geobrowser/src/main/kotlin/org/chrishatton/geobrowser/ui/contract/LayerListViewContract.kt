@@ -13,5 +13,5 @@ interface LayerListViewContract : ViewContract {
 
     var layerPresentersConsumer : Consumer<Iterable<LayerPresenter>>
 
-    var layerViewBindingsStream : Observable<Map<MapViewLayer,LayerViewContract>>
+    var layerViewBindingsStream : Observable<Map<LayerViewContract,MapViewLayer>>
 }

@@ -39,9 +39,10 @@ class LayerListView : PresentedFragment<LayerListViewContract,LayerListPresenter
             }
         )
 
-    override var layerViewBindingsStream: Observable<Map<MapViewLayer, LayerViewContract>> =
+    override var layerViewBindingsStream: Observable<Map<LayerViewContract, MapViewLayer>> =
         layerListAdapter.layerViewBindingStream
-            .scan(emptyMap<MapViewLayer, LayerViewContract>()) {  map,layerToView -> map + mapOf(layerToView) }
+            .scan(emptyMap<LayerViewContract, MapViewLayer>()) {  map,viewToLayer -> map + mapOf(viewToLayer) }
+            .logOnNext { "Bindings: ${it.count()}" }
             .share()
 
     override fun createPresenter(): LayerListPresenter = LayerListPresenter(view = this)

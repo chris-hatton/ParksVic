@@ -20,8 +20,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         private val createViewHolder : (ViewGroup?, Int)-> RxRecyclerAdapter.ViewHolder<out T>
 ) : RecyclerView.Adapter<VH>() {
 
-    private val layerViewBindingRelay : Relay<Pair<T, VH>> = BehaviorRelay.create()
-    val layerViewBindingStream : Observable<Pair<T, VH>> = layerViewBindingRelay.hide()
+    private val layerViewBindingRelay : Relay<Pair<VH, T>> = BehaviorRelay.create()
+    val layerViewBindingStream : Observable<Pair<VH, T>> = layerViewBindingRelay.hide()
 
     private val disposable = CompositeDisposable()
     private var items : Iterable<T> by Delegates.observable(emptyList()) { _,_,_ ->
@@ -52,8 +52,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item : T = items.elementAt(position)
-        //holder.item = item
-        val binding = item to holder
+        //holder.itemView = item
+        val binding = holder to item
         layerViewBindingRelay.accept(binding)
     }
 }

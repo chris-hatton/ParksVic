@@ -7,8 +7,6 @@ import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.observables.ConnectableObservable
-import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.rx.*
@@ -52,15 +50,15 @@ class LayerListPresenter(
 
     val selectedLayers : Observable<List<MapViewLayer>> = layerPresentersStream.switchMap { layerPresenters ->
 
-        val layersToSelectedStatesStream : Iterable<Observable<Pair<MapViewLayer,Boolean>>> =
+        val layerToIsSelectedStreams : Iterable<Observable<Pair<MapViewLayer,Boolean>>> =
             layerPresenters.map { layerPresenter:LayerPresenter ->
                 layerPresenter.isSelectedStream
                     .map { layerPresenter.layer to it }
             }
 
-        Observable.combineLatest(layersToSelectedStatesStream) { layersToSelectedStates ->
+        Observable.combineLatest(layerToIsSelectedStreams) { layersToSelectedStates ->
             layersToSelectedStates
-                .map { layerToSelectedState -> layerToSelectedState as Pair<MapViewLayer,Boolean> }
+                .map    { layerToSelectedState -> layerToSelectedState as Pair<MapViewLayer,Boolean> }
                 .filter { (_,isVisible) -> isVisible }
                 .map    { (layer,_)     -> layer     }
         }

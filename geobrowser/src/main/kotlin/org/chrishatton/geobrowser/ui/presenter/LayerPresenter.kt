@@ -17,12 +17,13 @@ class LayerPresenter(val layer: MapViewLayer, attachedViewStream: Observable<Nul
         super.onCreate(subscriptions)
 
         isSelectedStream = attachedViewStream
-            .subscribeOnLogicThread()
+            .subscribeOnUiThread()
             .observeOnLogicThread()
             .switchMap { (view) ->
-                view?.isSelectedStream?.subscribeOnUiThread()?.observeOnLogicThread() ?: Observable.never<Boolean>()
+                view?.isSelectedStream?.subscribeOnUiThread() ?: Observable.never<Boolean>()
             }
-            .startWith(false)
+            .observeOnLogicThread()
+            .distinctUntilChanged()
             .share()
     }
 
@@ -44,7 +45,6 @@ class LayerPresenter(val layer: MapViewLayer, attachedViewStream: Observable<Nul
         isSelectedStream
             .subscribeOnLogicThread()
             .observeOnUiThread()
-            .logOnNext { "Is selected $it" }
             .distinctUntilChanged()
             .subscribe(view.isSelectedConsumer)
             .addTo(viewSubscriptions)
