@@ -5,15 +5,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
-import org.chrishatton.crosswind.Crosswind
 import org.chrishatton.crosswind.rx.observeOnLogicThread
 import org.chrishatton.crosswind.rx.subscribeOnLogicThread
 import org.chrishatton.crosswind.ui.contract.ViewContract
-import org.chrishatton.crosswind.util.Nullable
+import org.chrishatton.crosswind.util.Optional
 
-abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Observable<Nullable<T>>) {
+abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Observable<Optional<T>>) {
 
-    constructor( view: T ) : this( Observable.just(Nullable(view)) )
+    constructor( view: T ) : this( Observable.just(Optional(view)) )
 
     sealed class Exception(message:String) : kotlin.Exception(message) {
         class InvalidState(message: String) : Exception(message)
@@ -21,7 +20,7 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
 
     sealed class State {
         object NotCreated : State()
-        data class Created<T:ViewContract>(val attachedViewStream: Observable<Nullable<T>>, val isResumed: Observable<Boolean> ) : State()
+        data class Created<T:ViewContract>(val attachedViewStream: Observable<Optional<T>>, val isResumed: Observable<Boolean> ) : State()
     }
 
     private val stateSubject : BehaviorSubject<State> = BehaviorSubject.createDefault(State.NotCreated)
@@ -48,15 +47,17 @@ abstract class Presenter<T: ViewContract>(protected val attachedViewStream : Obs
 
         data class ViewChange(val oldView: T?, val newView : T?)
 
-        val safeAttachedViewStream =
-                attachedViewStream
-                        .startWith( Nullable() )
-                        .share()
+        val attachedViewChangesStream : Observable<ViewChange> = {
 
-        val attachedViewChangesStream : Observable<ViewChange> =
-                Observables.zip( safeAttachedViewStream, safeAttachedViewStream.skip(1) )
-                        .filter { it.first.value !== it.second.value }
-                        .map { ViewChange(it.first.value,it.second.value) }
+            val safeAttachedViewStream =
+                    attachedViewStream
+                            .startWith( Optional() )
+                            .share()
+
+            Observables.zip(safeAttachedViewStream, safeAttachedViewStream.skip(1))
+                    .filter { it.first.value !== it.second.value }
+                    .map { ViewChange(it.first.value, it.second.value) }
+        }()
 
         attachedViewChangesStream
             .subscribeOnLogicThread()

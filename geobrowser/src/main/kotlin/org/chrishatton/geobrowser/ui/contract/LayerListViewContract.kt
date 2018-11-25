@@ -1,5 +1,6 @@
 package org.chrishatton.geobrowser.ui.contract
 
+import io.michaelrocks.bimap.BiMap
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import opengis.model.app.MapViewLayer
@@ -13,5 +14,5 @@ interface LayerListViewContract : ViewContract {
 
     var layerPresentersConsumer : Consumer<Iterable<LayerPresenter>>
 
-    var layerViewBindingsStream : Observable<Map<LayerViewContract,MapViewLayer>>
+    var layerViewBindingsStream : Observable<BiMap<LayerViewContract, MapViewLayer>>
 }

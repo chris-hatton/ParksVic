@@ -28,7 +28,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
         notifyDataSetChanged()
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         itemsStream
             .subscribeBy(
@@ -38,7 +38,7 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
             .addTo(disposable)
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         disposable.dispose()
         super.onDetachedFromRecyclerView(recyclerView)
     }
@@ -51,8 +51,8 @@ class RxRecyclerAdapter<VH: RxRecyclerAdapter.ViewHolder<T>,T>(
     override fun getItemCount(): Int = items.count()
 
     override fun onBindViewHolder(holder: VH, position: Int) {
+        println("Bind $position to $holder")
         val item : T = items.elementAt(position)
-        //holder.itemView = item
         val binding = holder to item
         layerViewBindingRelay.accept(binding)
     }

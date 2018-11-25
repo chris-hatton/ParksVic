@@ -203,7 +203,7 @@ class WmsCapabilities(
             )
 
             /**
-             * LogoURL is undocumented in the OpenGIS WMS 1.3.0 schema.
+             * LogoURL is undocumented in the OpenGIS WMS $ext.kotlin_version schema.
              */
             @Root(name="LogoURL")
             data class LogoURL(

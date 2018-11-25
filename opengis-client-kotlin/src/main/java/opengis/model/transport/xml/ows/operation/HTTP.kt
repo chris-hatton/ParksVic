@@ -6,7 +6,7 @@ import org.simpleframework.xml.Path
 import org.simpleframework.xml.Root
 
 /**
- * Specified in: http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd
+ * Specified in: http://schemas.opengis.net/wms/$ext.kotlin_version/capabilities_1_3_0.xsd
  *
  * Available HTTP request methods. At least "Get" shall be supported.
  *

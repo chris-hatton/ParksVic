@@ -13,7 +13,7 @@ import org.junit.Test
 class VictoriaWmsTests : WmsTests {
 
     @Test
-    override fun testGetCapabilities() = test( resource = "/data-vic-gov-au/wms-GetCapabilities-1.3.0.xml" ) {
+    override fun testGetCapabilities() = test( resource = "/data-vic-gov-au/wms-GetCapabilities-$ext.kotlin_version.xml" ) {
         capabilities: WmsCapabilities ->
         Assert.assertTrue( capabilities.service?.abstract?.isNotBlank() ?: false )
     }

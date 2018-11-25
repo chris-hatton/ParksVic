@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "27.0.3"
+    buildToolsVersion "28.0.3"
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
@@ -29,9 +29,9 @@ repositories {
 
 buildscript {
 
-    ext.kotlin_version = '1.2.60'
-    ext.gson_version   = '2.7'
-    ext.okhttp_version = '3.8.1'
+//    ext.kotlin_version = '$ext.kotlin_version'
+//    ext.gson_version   = '2.7'
+//    ext.okhttp_version = '3.8.1'
 
     repositories {
         mavenLocal()
@@ -42,7 +42,7 @@ buildscript {
 
     dependencies {
         //classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        //classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

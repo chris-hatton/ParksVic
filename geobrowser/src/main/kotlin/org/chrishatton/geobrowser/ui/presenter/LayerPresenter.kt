@@ -6,10 +6,10 @@ import io.reactivex.rxkotlin.addTo
 import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
-import org.chrishatton.crosswind.util.Nullable
+import org.chrishatton.crosswind.util.Optional
 import org.chrishatton.geobrowser.ui.contract.LayerViewContract
 
-class LayerPresenter(val layer: MapViewLayer, attachedViewStream: Observable<Nullable<LayerViewContract>> ) : Presenter<LayerViewContract>(attachedViewStream) {
+class LayerPresenter(val layer: MapViewLayer, attachedViewStream: Observable<Optional<LayerViewContract>> ) : Presenter<LayerViewContract>(attachedViewStream) {
 
     lateinit var isSelectedStream : Observable<Boolean>
 

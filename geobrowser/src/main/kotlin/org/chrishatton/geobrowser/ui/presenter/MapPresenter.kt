@@ -1,7 +1,6 @@
 package org.chrishatton.geobrowser.ui.presenter
 
 import geojson.Feature
-import io.reactivex.Observable
 import opengis.model.app.request.wms.GetMap
 import opengis.process.OpenGisRequestProcessor
 import opengis.process.WmsTileProvider
@@ -10,7 +9,6 @@ import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.Crosswind
 import org.chrishatton.geobrowser.ui.contract.MapViewContract
 import org.chrishatton.crosswind.ui.presenter.Presenter
-import org.chrishatton.crosswind.util.Nullable
 import kotlin.properties.Delegates
 
 /**

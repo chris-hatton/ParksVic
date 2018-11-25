@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxrelay2.BehaviorRelay
+import io.michaelrocks.bimap.BiMap
+import io.michaelrocks.bimap.HashBiMap
 import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_layer_list.*
@@ -39,9 +41,13 @@ class LayerListView : PresentedFragment<LayerListViewContract,LayerListPresenter
             }
         )
 
-    override var layerViewBindingsStream: Observable<Map<LayerViewContract, MapViewLayer>> =
+    override var layerViewBindingsStream: Observable<BiMap<LayerViewContract, MapViewLayer>> =
         layerListAdapter.layerViewBindingStream
-            .scan(emptyMap<LayerViewContract, MapViewLayer>()) {  map,viewToLayer -> map + mapOf(viewToLayer) }
+            .scan(HashBiMap.create<LayerViewContract,MapViewLayer>(mapOf())) { map, viewToLayer ->
+                map.forcePut(viewToLayer.first,viewToLayer.second)
+                map
+            }
+            .map { it as BiMap<LayerViewContract,MapViewLayer>}
             .logOnNext { "Bindings: ${it.count()}" }
             .share()
 

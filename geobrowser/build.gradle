@@ -16,6 +16,7 @@ dependencies {
     implementation project(':geojson-kotlin')
     implementation project(':crosswind')
 
+    implementation 'io.michaelrocks:bimap:1.0.2'
     implementation 'com.google.guava:guava:25.1-android'
 
     // Kotlin

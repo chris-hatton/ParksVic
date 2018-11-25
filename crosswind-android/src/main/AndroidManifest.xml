@@ -1,15 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.chrishatton.crosswind"
-          android:versionCode="1"
-          android:versionName="1.0" >
+          package="org.chrishatton.crosswind" >
 
     <!-- USE_CREDENTIALS, MANAGE_ACCOUNTS and AUTHENTICATE_ACCOUNTS are needed for API < 23.
         In API >= 23 the do not exist anymore -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="24" />
 
 </manifest>

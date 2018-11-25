@@ -7,11 +7,12 @@ import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
+import io.reactivex.observables.ConnectableObservable
 import io.reactivex.rxkotlin.addTo
 import opengis.model.app.MapViewLayer
 import org.chrishatton.crosswind.rx.*
 import org.chrishatton.crosswind.ui.presenter.Presenter
-import org.chrishatton.crosswind.util.Nullable
+import org.chrishatton.crosswind.util.Optional
 import org.chrishatton.geobrowser.ui.contract.LayerListViewContract
 
 /**
@@ -39,16 +40,16 @@ class LayerListPresenter(
     /**
      *
      */
-    private val layerPresentersStream : Observable<Iterable<LayerPresenter>> = layerListRelay
+    private val layerPresentersStream : ConnectableObservable<Iterable<LayerPresenter>> = layerListRelay
         .observeOnLogicThread()
         .map { mapViewLayers:Iterable<MapViewLayer> ->
             mapViewLayers.map(this::getOrCreateLayerPresenter)
         }
         .scan(emptySet<LayerPresenter>()) { a,b -> a + b }
         .map { it as Iterable<LayerPresenter> }
-        .share()
+        .publish()
 
-    val selectedLayers : Observable<List<MapViewLayer>> = layerPresentersStream.switchMap { layerPresenters ->
+    val selectedLayers : ConnectableObservable<List<MapViewLayer>> = layerPresentersStream.switchMap { layerPresenters ->
 
         val layerToIsSelectedStreams : Iterable<Observable<Pair<MapViewLayer,Boolean>>> =
             layerPresenters.map { layerPresenter:LayerPresenter ->
@@ -62,19 +63,25 @@ class LayerListPresenter(
                 .filter { (_,isVisible) -> isVisible }
                 .map    { (layer,_)     -> layer     }
         }
-    }.share()
+    }.publish()
 
     private fun getOrCreateLayerPresenter(mapViewLayer: MapViewLayer ) = layerPresenterCache.get(mapViewLayer) {
         val viewStream = view.layerViewBindingsStream
             .subscribeOnUiThread()
             .observeOnLogicThread()
-            .map { layersToViews ->
-                val layerView = layersToViews[mapViewLayer]
-                Nullable(layerView)
+            .map { viewsToLayers ->
+                val layerView = viewsToLayers.inverse[mapViewLayer]
+                Optional(layerView)
             }
             .distinctUntilChanged()
 
         LayerPresenter(mapViewLayer,viewStream).also { it.create() }
+    }
+
+    override fun onCreate(subscriptions: CompositeDisposable) {
+        super.onCreate(subscriptions)
+        layerPresentersStream.connect().addTo(subscriptions)
+        selectedLayers.connect().addTo(subscriptions)
     }
 
     override fun onViewAttached(view: LayerListViewContract, viewSubscriptions: CompositeDisposable) {
